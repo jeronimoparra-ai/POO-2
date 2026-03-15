@@ -2,7 +2,7 @@
 
 Sistema de gestión de biblioteca implementado en Java aplicando los principios de
 Programación Orientada a Objetos (POO). Desarrollado como proyecto universitario
-para la asignatura Fundamentos de la Programación en la IU Digital de Antioquia.
+para la asignatura Programación Orientada A Objetos en la IU Digital de Antioquia.
 
 ---
 
