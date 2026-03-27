@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema de Gestión de Biblioteca — POO-2</title>
+  <title>Sistema de Gestión de Biblioteca — POO-2 · IU Digital</title>
+  <meta name="description" content="Sistema de gestión de biblioteca universitaria desarrollado en Java con Programación Orientada a Objetos (POO). Proyecto académico de Andres Parra, Juan Rueda y Luis Castaño — IU Digital de Antioquia, 2026." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -24,7 +25,7 @@
       --accent-purple:#BC86F5;
       --text:        #E6EDF3;
       --text-muted:  #8B949E;
-      --text-dim:    #6E7681;
+      --text-dim:    #848D97;
       --radius:      12px;
       --radius-lg:   20px;
       --shadow:      0 4px 24px rgba(0,0,0,.45);
@@ -259,7 +260,7 @@
        SECTION GENERIC
     ═══════════════════════════════════════ */
     section { padding: 6rem 2rem; }
-    section:nth-child(even) { background: var(--bg2); }
+    .section-alt { background: var(--bg2); }
     .container { max-width: 1100px; margin: 0 auto; }
     .section-header { text-align: center; margin-bottom: 3.5rem; }
     .section-tag {
@@ -338,6 +339,11 @@
       align-items: center;
     }
     .about-text p { color: var(--text-muted); margin-bottom: 1rem; line-height: 1.75; }
+    .about-text h2 {
+      font-family: var(--font-head);
+      font-size: 1.6rem; font-weight: 700;
+      margin-bottom: 1.25rem;
+    }
     .about-text h3 {
       font-family: var(--font-head);
       font-size: 1.6rem; font-weight: 700;
@@ -680,12 +686,12 @@
       color: var(--text);
       font-size: .9rem;
       font-family: var(--font-body);
-      outline: none;
+      outline: 0;
       transition: var(--transition);
     }
     .form-group select:focus, .form-group input:focus {
       border-color: var(--accent-blue);
-      box-shadow: 0 0 0 3px rgba(46,116,181,.15);
+      box-shadow: 0 0 0 3px rgba(46,116,181,.35);
     }
     .loan-result {
       margin-top: 1.25rem;
@@ -697,6 +703,9 @@
       font-size: .82rem;
       color: var(--accent-green);
       display: none;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: pre;
       animation: slideIn .4s ease;
     }
     @keyframes slideIn {
@@ -714,11 +723,11 @@
       color: var(--text);
       font-size: .95rem;
       font-family: var(--font-body);
-      outline: none;
+      outline: 0;
       transition: var(--transition);
       margin-bottom: 1.5rem;
     }
-    #searchInput:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(46,116,181,.15); }
+    #searchInput:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(46,116,181,.35); }
     #searchResults { display: flex; flex-direction: column; gap: .65rem; }
     .search-result-item {
       background: var(--bg3);
@@ -777,8 +786,10 @@
       color: #a8d8a8;
       min-height: 380px;
       position: relative;
+      overflow-x: auto;
       overflow-y: auto;
       max-height: 480px;
+      -webkit-overflow-scrolling: touch;
     }
     .t-green  { color: #00d084; }
     .t-blue   { color: #58a6ff; }
@@ -958,6 +969,7 @@
       border-radius: 10px;
       padding: 1.2rem;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       line-height: 1.6;
     }
     .modal-desc {
@@ -975,18 +987,117 @@
       #about .about-grid { grid-template-columns: 1fr; }
       #ea3 .tree-container { grid-template-columns: 1fr; }
       .footer-inner { grid-template-columns: 1fr; }
+      /* Flip cards: use min-height instead of fixed height on mobile */
+      .flip-card { height: auto; min-height: 340px; }
+      /* Tabs: allow horizontal scroll if labels don't fit */
+      #demo .tabs-nav { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; }
+      .tab-btn { white-space: nowrap; }
     }
     @media (max-width: 480px) {
-      section { padding: 4rem 1rem; }
+      section { padding: 3.5rem 1rem; }
       .hero-stats { gap: 1.5rem; }
+      /* On very small screens, show flip cards without the 3D rotation — toggle instead */
+      .flip-card { perspective: none; }
+      .flip-card-inner { transform-style: flat; }
+      .flip-card:hover .flip-card-inner { transform: none; }
+      .flip-front { position: static; }
+      .flip-back { position: static; transform: none; display: none; border-top: 1px solid var(--accent-blue); border-radius: 0 0 var(--radius-lg) var(--radius-lg); border-top-left-radius: 0; border-top-right-radius: 0; }
+      .flip-card.flipped .flip-front { display: none; }
+      .flip-card.flipped .flip-back { display: block; }
+      .flip-card-inner { height: auto; }
+    }
+
+    /* ═══════════════════════════════════════
+       SKIP LINK & SCREEN-READER UTILITIES
+    ═══════════════════════════════════════ */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--accent-blue);
+      color: #fff;
+      padding: .5rem 1.25rem;
+      border-radius: 0 0 8px 8px;
+      font-weight: 600;
+      font-size: .9rem;
+      z-index: 9999;
+      transition: top .2s ease;
+      text-decoration: none;
+    }
+    .skip-link:focus { top: 0; }
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ═══════════════════════════════════════
+       FOCUS VISIBLE — KEYBOARD NAVIGATION
+    ═══════════════════════════════════════ */
+    :focus-visible {
+      outline: 2px solid var(--accent-blue-light);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    /* Elements that provide their own visible focus via box-shadow */
+    .form-group select:focus-visible,
+    .form-group input:focus-visible,
+    #searchInput:focus-visible {
+      outline: 0;
+    }
+    /* Buttons with their own coloured background */
+    .btn-primary:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+    .nav-links a:focus-visible {
+      background: var(--bg3);
+      color: var(--text);
+      outline: 2px solid var(--accent-blue-light);
+      outline-offset: 2px;
+    }
+    .tree-node:focus-visible {
+      outline: 2px solid var(--accent-green);
+      outline-offset: 2px;
+    }
+    .poly-btn:focus-visible {
+      outline: 2px solid var(--accent-purple);
+      outline-offset: 2px;
+    }
+    .tab-btn:focus-visible {
+      outline: 2px solid var(--accent-blue-light);
+      outline-offset: -2px;
+    }
+    #back-top:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+
+    /* ═══════════════════════════════════════
+       REDUCED MOTION
+    ═══════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      html { scroll-behavior: auto; }
     }
   </style>
 </head>
 <body>
 
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
 <!-- ═══════════════════════════════════════
-     NAVBAR
+     HEADER / NAVBAR
 ═══════════════════════════════════════ -->
+<header>
 <nav id="navbar" role="navigation" aria-label="Navegación principal">
   <a class="nav-logo" href="#hero">
     <span class="logo-icon">🏛️</span>
@@ -1003,6 +1114,9 @@
     <li><a href="#team">Equipo</a></li>
   </ul>
 </nav>
+</header>
+
+<main id="main-content">
 
 <!-- ═══════════════════════════════════════
      HERO
@@ -1057,7 +1171,7 @@
   <div class="container">
     <div class="about-grid reveal">
       <div class="about-text">
-        <h3>Caso de Estudio</h3>
+        <h2>Caso de Estudio</h2>
         <p>Este proyecto implementa un sistema completo de gestión de biblioteca universitaria usando los principios fundamentales de la Programación Orientada a Objetos en Java.</p>
         <p>El sistema permite registrar libros y usuarios, realizar y devolver préstamos, buscar por título o autor, generar recibos automáticos y consultar el historial global de préstamos.</p>
         <ul class="feature-list">
@@ -1099,7 +1213,7 @@
 <!-- ═══════════════════════════════════════
      SECTION 3 — EA1 (UML)
 ═══════════════════════════════════════ -->
-<section id="ea1">
+<section id="ea1" class="section-alt">
   <div class="container">
     <div class="section-header reveal">
       <div class="section-tag">Actividad 1</div>
@@ -1209,15 +1323,15 @@
     <div class="section-header reveal">
       <div class="section-tag">Actividad 2</div>
       <h2 class="section-title">EA2 — Implementación del Diagrama de Clases</h2>
-      <p class="section-desc">Implementación en Java de las 4 clases del sistema aplicando encapsulamiento con atributos <code>private</code> y acceso controlado mediante métodos públicos. Mover sobre cada tarjeta para ver el código Java.</p>
+      <p class="section-desc">Implementación en Java de las 4 clases del sistema aplicando encapsulamiento con atributos <code>private</code> y acceso controlado mediante métodos públicos. Pasa el cursor sobre cada tarjeta para ver el código Java.</p>
     </div>
     <div class="flip-grid reveal">
 
       <!-- Libro -->
-      <div class="flip-card" tabindex="0" role="button" aria-label="Clase Libro - h¿Mover para ver código">
+      <div class="flip-card" tabindex="0" role="button" aria-label="Clase Libro — pasa el cursor para ver el código Java">
         <div class="flip-card-inner">
           <div class="flip-front">
-            <div class="flip-front-title">📖 Libro</div>
+            <h3 class="flip-front-title">📖 Libro</h3>
             <div class="attr-group">
               <div class="attr-label">Atributos</div>
               <div class="attr-item">titulo : String</div>
@@ -1232,7 +1346,7 @@
               <div class="method-item">devolver() : void</div>
               <div class="method-item">actualizarEstado() : void</div>
             </div>
-            <div class="flip-hint">Mover para ver código →</div>
+            <div class="flip-hint">Pasa el cursor para ver código →</div>
           </div>
           <div class="flip-back">
             <pre>public class Libro {
@@ -1266,10 +1380,10 @@
       </div>
 
       <!-- Usuario -->
-      <div class="flip-card" tabindex="0" role="button" aria-label="Clase Usuario - Mover para ver código">
+      <div class="flip-card" tabindex="0" role="button" aria-label="Clase Usuario — pasa el cursor para ver el código Java">
         <div class="flip-card-inner">
           <div class="flip-front">
-            <div class="flip-front-title">👤 Usuario</div>
+            <h3 class="flip-front-title">👤 Usuario</h3>
             <div class="attr-group">
               <div class="attr-label">Atributos</div>
               <div class="attr-item">nombre : String</div>
@@ -1283,7 +1397,7 @@
               <div class="method-item">devolverLibro(libro)</div>
               <div class="method-item">verificarLimite()</div>
             </div>
-            <div class="flip-hint">Mover para ver código →</div>
+            <div class="flip-hint">Pasa el cursor para ver código →</div>
           </div>
           <div class="flip-back">
             <pre>public class Usuario {
@@ -1315,10 +1429,10 @@
       </div>
 
       <!-- Recibo -->
-      <div class="flip-card" tabindex="0" role="button" aria-label="Clase Recibo - Mover para ver código">
+      <div class="flip-card" tabindex="0" role="button" aria-label="Clase Recibo — pasa el cursor para ver el código Java">
         <div class="flip-card-inner">
           <div class="flip-front">
-            <div class="flip-front-title">🧾 Recibo</div>
+            <h3 class="flip-front-title">🧾 Recibo</h3>
             <div class="attr-group">
               <div class="attr-label">Atributos</div>
               <div class="attr-item">libro : Libro</div>
@@ -1331,7 +1445,7 @@
               <div class="method-item">getLibro() : Libro</div>
               <div class="method-item">getUsuario() : Usuario</div>
             </div>
-            <div class="flip-hint">Mover para ver código →</div>
+            <div class="flip-hint">Pasa el cursor para ver código →</div>
           </div>
           <div class="flip-back">
             <pre>public class Recibo {
@@ -1364,10 +1478,10 @@
       </div>
 
       <!-- SistemaBiblioteca -->
-      <div class="flip-card" tabindex="0" role="button" aria-label="Clase SistemaBiblioteca - Mover para ver código">
+      <div class="flip-card" tabindex="0" role="button" aria-label="Clase SistemaBiblioteca — pasa el cursor para ver el código Java">
         <div class="flip-card-inner">
           <div class="flip-front">
-            <div class="flip-front-title">🏛️ SistemaBiblioteca</div>
+            <h3 class="flip-front-title">🏛️ SistemaBiblioteca</h3>
             <div class="attr-group">
               <div class="attr-label">Atributos</div>
               <div class="attr-item">catalogo : List&lt;Libro&gt;</div>
@@ -1380,7 +1494,7 @@
               <div class="method-item">buscarPorAutor(autor)</div>
               <div class="method-item">consultarRegistroGlobal()</div>
             </div>
-            <div class="flip-hint">Mover para ver código →</div>
+            <div class="flip-hint">Pasa el cursor para ver código →</div>
           </div>
           <div class="flip-back">
             <pre>public class SistemaBiblioteca {
@@ -1422,7 +1536,7 @@
 <!-- ═══════════════════════════════════════
      SECTION 5 — EA3 (HERENCIA)
 ═══════════════════════════════════════ -->
-<section id="ea3">
+<section id="ea3" class="section-alt">
   <div class="container">
     <div class="section-header reveal">
       <div class="section-tag">Actividad 3</div>
@@ -1433,7 +1547,7 @@
     <div class="tree-container reveal">
       <!-- Árbol Libro -->
       <div class="tree-block">
-        <div class="tree-block-title">Jerarquía de Libro</div>
+        <h3 class="tree-block-title">Jerarquía de Libro</h3>
         <div class="tree-root">📚 Libro <em style="margin-left:auto;font-size:.75rem;color:var(--text-dim)">(superclase)</em></div>
         <div class="tree-children">
           <div class="tree-node" onclick="openModal('ficcion')" tabindex="0" role="button" aria-label="Ver código LibroFiccion">
@@ -1452,7 +1566,7 @@
       </div>
       <!-- Árbol Usuario -->
       <div class="tree-block">
-        <div class="tree-block-title">Jerarquía de Usuario</div>
+        <h3 class="tree-block-title">Jerarquía de Usuario</h3>
         <div class="tree-root">👥 Usuario <em style="margin-left:auto;font-size:.75rem;color:var(--text-dim)">(superclase)</em></div>
         <div class="tree-children">
           <div class="tree-node" onclick="openModal('estudiante')" tabindex="0" role="button" aria-label="Ver código UsuarioEstudiante">
@@ -1469,7 +1583,7 @@
 
     <!-- Polymorphism Demo -->
     <div class="poly-demo reveal">
-      <div class="poly-demo-title">🔄 Demo de Polimorfismo — mostrarInfoLibro()</div>
+      <h3 class="poly-demo-title">🔄 Demo de Polimorfismo — mostrarInfoLibro()</h3>
       <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:1.25rem;">Selecciona un tipo de libro para ver cómo el polimorfismo ejecuta una implementación diferente del mismo método:</p>
       <div class="poly-buttons">
         <button class="poly-btn" onclick="polyDemo('ficcion', this)">new LibroFiccion()</button>
@@ -1536,6 +1650,7 @@
 
       <!-- Búsqueda -->
       <div class="tab-panel" id="tab-search" role="tabpanel">
+        <label class="sr-only" for="searchInput">Buscar libros por título o autor</label>
         <input type="text" id="searchInput" placeholder="🔍  Buscar por título o autor..." oninput="doSearch(this.value)" autocomplete="off" />
         <div id="searchResults"></div>
         <div id="noResults">Sin resultados para tu búsqueda.</div>
@@ -1587,19 +1702,19 @@
     <div class="team-grid reveal">
       <div class="team-card">
         <div class="team-avatar">👨‍💻</div>
-        <div class="team-name">Andres Jeronimo Parra Bastidas</div>
+        <h3 class="team-name">Andres Jeronimo Parra Bastidas</h3>
         <div class="team-role">Arquitectura del sistema y EA1</div>
         <div class="team-desc">Diseño del diagrama UML, modelado de clases y coordinación de la arquitectura general del sistema de biblioteca.</div>
       </div>
       <div class="team-card">
         <div class="team-avatar">👨‍💻</div>
-        <div class="team-name">Juan Angel Rueda Correa</div>
+        <h3 class="team-name">Juan Angel Rueda Correa</h3>
         <div class="team-role">Implementación EA2 y Polimorfismo</div>
         <div class="team-desc">Implementación del encapsulamiento con atributos privados, getters/setters y demostración del polimorfismo con subclases.</div>
       </div>
       <div class="team-card">
         <div class="team-avatar">👨‍💻</div>
-        <div class="team-name">Luis Fernando Castano Rua</div>
+        <h3 class="team-name">Luis Fernando Castano Rua</h3>
         <div class="team-role">Herencia EA3 y documentación</div>
         <div class="team-desc">Diseño de la jerarquía de herencia, implementación de subclases especializadas y documentación del proyecto.</div>
       </div>
@@ -1610,6 +1725,7 @@
 <!-- ═══════════════════════════════════════
      FOOTER
 ═══════════════════════════════════════ -->
+</main>
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
@@ -1644,7 +1760,7 @@
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title" id="modalTitle"></div>
+      <h2 class="modal-title" id="modalTitle"></h2>
       <button class="modal-close" onclick="closeModal()" aria-label="Cerrar modal">✕</button>
     </div>
     <p class="modal-desc" id="modalDesc"></p>
@@ -2111,14 +2227,25 @@ document.querySelectorAll('.tree-node').forEach(node => {
     }
   });
 });
-// Keyboard support for flip cards
+// Keyboard + touch support for flip cards
 document.querySelectorAll('.flip-card').forEach(card => {
+  // Keyboard: Enter/Space toggles flip
   card.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      card.querySelector('.flip-card-inner').style.transform =
-        card.querySelector('.flip-card-inner').style.transform === 'rotateY(180deg)'
-          ? '' : 'rotateY(180deg)';
+      card.classList.toggle('flipped');
+      const inner = card.querySelector('.flip-card-inner');
+      if (window.innerWidth > 480) {
+        inner.style.transform =
+          inner.style.transform === 'rotateY(180deg)'
+            ? '' : 'rotateY(180deg)';
+      }
+    }
+  });
+  // Touch/click on small screens: toggle flipped class
+  card.addEventListener('click', () => {
+    if (window.innerWidth <= 480) {
+      card.classList.toggle('flipped');
     }
   });
 });
