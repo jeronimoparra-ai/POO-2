@@ -84,6 +84,42 @@
       text-decoration: none;
     }
     .nav-logo .logo-icon { font-size: 1.4rem; }
+    /* ─── Logo institucional ─── */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-family: var(--font-head);
+      font-weight: 700;
+    }
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: linear-gradient(135deg, #0f172a, #1e3a5f);
+      padding: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.45), 0 0 0 1px rgba(88,166,255,.25);
+      flex-shrink: 0;
+      transition: box-shadow var(--transition), transform var(--transition);
+    }
+    .logo-container:hover .logo {
+      box-shadow: 0 6px 18px rgba(0,0,0,.5), 0 0 0 2px rgba(88,166,255,.55);
+      transform: scale(1.06);
+    }
+    .logo-container:hover { text-decoration: none; color: var(--text); }
+    .site-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .logo-container:focus-visible {
+      outline: 2px solid var(--accent-blue-light);
+      outline-offset: 4px;
+      border-radius: 6px;
+    }
     .nav-links { display: flex; gap: .25rem; list-style: none; }
     .nav-links a {
       padding: .4rem .85rem;
@@ -992,6 +1028,9 @@
       /* Tabs: allow horizontal scroll if labels don't fit */
       #demo .tabs-nav { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; }
       .tab-btn { white-space: nowrap; }
+      /* Logo responsive */
+      .logo { width: 35px; height: 35px; padding: 3px; }
+      .site-title { font-size: 1rem; }
     }
     @media (max-width: 480px) {
       section { padding: 3.5rem 1rem; }
@@ -1099,9 +1138,9 @@
 ═══════════════════════════════════════ -->
 <header>
 <nav id="navbar" role="navigation" aria-label="Navegación principal">
-  <a class="nav-logo" href="#hero">
-    <span class="logo-icon">🏛️</span>
-    <span>Sistema Biblioteca POO</span>
+  <a class="logo-container" href="#hero" aria-label="Inicio — Sistema Biblioteca POO">
+    <img src="assets/img/iu-digital-logo.png" alt="IU Digital de Antioquia" class="logo" width="42" height="42" />
+    <span class="site-title">Sistema Biblioteca POO</span>
   </a>
   <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
     <span></span><span></span><span></span>
@@ -1126,7 +1165,7 @@
   <div class="hero-content">
     <div class="hero-eyebrow">
       <span>📚</span>
-      <span>IU Digital de Antioquia — Fundamentos de Programación</span>
+      <span>IU Digital de Antioquia — Programación Orientada a Objetos</span>
     </div>
     <h1 class="hero-title">Sistema de Gestión<br/>de Biblioteca</h1>
     <p class="hero-subtitle">Programación Orientada a Objetos &mdash; IU Digital</p>
@@ -1697,7 +1736,7 @@
     <div class="section-header reveal">
       <div class="section-tag">Equipo</div>
       <h2 class="section-title">Nuestro Equipo</h2>
-      <p class="section-desc">Estudiantes de Fundamentos de la Programación — IU Digital de Antioquia, 2026.</p>
+      <p class="section-desc">Estudiantes de Programación Orientada a Objetos — IU Digital de Antioquia, 2026.</p>
     </div>
     <div class="team-grid reveal">
       <div class="team-card">
@@ -1729,9 +1768,9 @@
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-      <a class="nav-logo" href="#hero">
-        <span class="logo-icon">🏛️</span>
-        <span>Sistema Biblioteca POO</span>
+      <a class="logo-container" href="#hero" aria-label="Inicio — Sistema Biblioteca POO">
+        <img src="assets/img/iu-digital-logo.png" alt="IU Digital de Antioquia" class="logo" width="42" height="42" />
+        <span class="site-title">Sistema Biblioteca POO</span>
       </a>
       <p>Sistema de gestión de biblioteca implementado en Java con POO. Proyecto académico — IU Digital de Antioquia.</p>
     </div>
