@@ -1184,19 +1184,19 @@
     </div>
     <div class="hero-stats">
       <div class="stat">
-        <div class="stat-number" data-target="4">0</div>
+        <div class="stat-number" data-target="4">4</div>
         <div class="stat-label">Clases base</div>
       </div>
       <div class="stat">
-        <div class="stat-number" data-target="5">0</div>
+        <div class="stat-number" data-target="5">5</div>
         <div class="stat-label">Subclases</div>
       </div>
       <div class="stat">
-        <div class="stat-number" data-target="10">0</div>
+        <div class="stat-number" data-target="10">10</div>
         <div class="stat-label">Archivos Java</div>
       </div>
       <div class="stat">
-        <div class="stat-number" data-target="3">0</div>
+        <div class="stat-number" data-target="3">3</div>
         <div class="stat-label">Integrantes</div>
       </div>
     </div>
@@ -2016,60 +2016,44 @@ Período: Prehistoria – Siglo XX`
 };
 
 const TERMINAL_LINES = [
-  { text: '╔══════════════════════════════════════════════════╗', cls: 't-blue' },
-  { text: '║   🏛️  SISTEMA DE GESTIÓN DE BIBLIOTECA          ║', cls: 't-blue' },
-  { text: '║        Institución Universitaria Digital         ║', cls: 't-blue' },
-  { text: '╚══════════════════════════════════════════════════╝', cls: 't-blue' },
-  { text: '' },
-  { text: '▶ Iniciando sistema...', cls: 't-yellow' },
+  { text: '╔════════════════════════════════════════╗', cls: 't-blue' },
+  { text: '║  SISTEMA DE GESTIÓN DE BIBLIOTECA     ║', cls: 't-blue' },
+  { text: '║       IU Digital de Antioquia         ║', cls: 't-blue' },
+  { text: '╚════════════════════════════════════════╝', cls: 't-blue' },
   { text: '✓ Objetos creados exitosamente', cls: 't-green' },
-  { text: '' },
-  { text: '--- Agregando libros al catálogo ---', cls: 't-dim' },
-  { text: '✓ Libro agregado: Harry Potter y la Piedra Filosofal', cls: 't-green' },
-  { text: '✓ Libro agregado: El Señor de los Anillos', cls: 't-green' },
-  { text: '✓ Libro agregado: Cien Años de Soledad', cls: 't-green' },
-  { text: '✓ Libro agregado: Romeo y Julieta', cls: 't-green' },
-  { text: '✓ Libro agregado: Sapiens', cls: 't-green' },
-  { text: '✓ Libro agregado: 1984', cls: 't-green' },
-  { text: '' },
-  { text: '--- Registrando usuarios ---', cls: 't-dim' },
-  { text: '✓ Usuario registrado: Andres Parra (ID: 1001)', cls: 't-green' },
-  { text: '✓ Usuario registrado: Juan Rueda (ID: 1002)', cls: 't-green' },
-  { text: '' },
-  { text: '--- Realizando préstamos ---', cls: 't-dim' },
-  { text: '╔══════════════════════════════════════════╗', cls: 't-white' },
-  { text: '║         RECIBO DE PRÉSTAMO               ║', cls: 't-white' },
-  { text: '╠══════════════════════════════════════════╣', cls: 't-white' },
-  { text: '║ Libro   : Harry Potter y la Piedra...    ║', cls: 't-white' },
-  { text: '║ Autor   : J.K. Rowling                  ║', cls: 't-white' },
-  { text: '║ Usuario : Andres Parra                  ║', cls: 't-white' },
-  { text: '║ ID      : 1001                          ║', cls: 't-white' },
-  { text: '║ Fecha   : 27/03/2026 08:00:00           ║', cls: 't-white' },
-  { text: '╚══════════════════════════════════════════╝', cls: 't-white' },
-  { text: '' },
-  { text: '╔══════════════════════════════════════════╗', cls: 't-white' },
-  { text: '║         RECIBO DE PRÉSTAMO               ║', cls: 't-white' },
-  { text: '╠══════════════════════════════════════════╣', cls: 't-white' },
-  { text: '║ Libro   : 1984                          ║', cls: 't-white' },
-  { text: '║ Autor   : George Orwell                 ║', cls: 't-white' },
-  { text: '║ Usuario : Andres Parra                  ║', cls: 't-white' },
-  { text: '║ ID      : 1001                          ║', cls: 't-white' },
-  { text: '║ Fecha   : 27/03/2026 08:00:05           ║', cls: 't-white' },
-  { text: '╚══════════════════════════════════════════╝', cls: 't-white' },
-  { text: '' },
-  { text: '--- Búsqueda por autor: "Garcia" ---', cls: 't-dim' },
-  { text: '📚 Encontrado: Cien Años de Soledad', cls: 't-yellow' },
-  { text: '' },
-  { text: '--- Registro global de préstamos ---', cls: 't-dim' },
-  { text: '=== REGISTRO GLOBAL DE PRESTAMOS ===', cls: 't-white' },
-  { text: "1. Recibo{libro='Harry Potter...', usuario='Andres Parra'}", cls: 't-white' },
-  { text: "2. Recibo{libro='1984', usuario='Andres Parra'}", cls: 't-white' },
-  { text: '=====================================', cls: 't-white' },
-  { text: '' },
-  { text: '✓ Devolución exitosa: Harry Potter y la Piedra Filosofal', cls: 't-green' },
-  { text: '✓ ¿Puede pedir más libros? true', cls: 't-green' },
-  { text: '' },
-  { text: '✅ Programa finalizado exitosamente.', cls: 't-green' },
+  { text: 'Agregando libros al catálogo...', cls: 't-dim' },
+  { text: '✓ Harry Potter y la Piedra Filosofal', cls: 't-green' },
+  { text: '✓ El Señor de los Anillos', cls: 't-green' },
+  { text: '✓ Orgullo y Prejuicio', cls: 't-green' },
+  { text: '✓ Cumbres Borrascosas', cls: 't-green' },
+  { text: '✓ 1984', cls: 't-green' },
+  { text: '✓ Cien Años de Soledad', cls: 't-green' },
+  { text: 'Registrando usuarios...', cls: 't-dim' },
+  { text: '✓ Juan Angel Rueda Correa', cls: 't-green' },
+  { text: '✓ Luis Fernando Castano Rua', cls: 't-green' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: 'REALIZANDO PRÉSTAMOS', cls: 't-white' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: '✅ Préstamo: Harry Potter → Juan Angel', cls: 't-yellow' },
+  { text: '✅ Préstamo: Orgullo y Prejuicio → Juan Angel', cls: 't-yellow' },
+  { text: '✅ Préstamo: 1984 → Luis Fernando', cls: 't-yellow' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: 'DEMOSTRANDO POLIMORFISMO', cls: 't-white' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: '📚 LibroFiccion: Harry Potter - Universo de Hogwarts', cls: 't-green' },
+  { text: '💕 LibroRomance: Orgullo y Prejuicio - Romance Histórico', cls: 't-green' },
+  { text: '🏺 LibroHistorico: 1984 - Siglo XX Totalitarismo', cls: 't-green' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: 'REGISTRO GLOBAL DE PRÉSTAMOS', cls: 't-white' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: '1. Juan Angel → Harry Potter [PRÉSTAMO]', cls: 't-white' },
+  { text: '2. Juan Angel → Orgullo y Prejuicio [PRÉSTAMO]', cls: 't-white' },
+  { text: '3. Luis Fernando → 1984 [PRÉSTAMO]', cls: 't-white' },
+  { text: '4. Juan Angel → Harry Potter [DEVOLUCIÓN]', cls: 't-white' },
+  { text: '╔════════════════════════════════════════╗', cls: 't-blue' },
+  { text: '║   ✅ EJECUCIÓN FINALIZADA             ║', cls: 't-blue' },
+  { text: '║   Process finished with exit code 0   ║', cls: 't-blue' },
+  { text: '╚════════════════════════════════════════╝', cls: 't-blue' },
 ];
 
 /* ─── PARTICLES ────────────────────────────────── */
@@ -2128,6 +2112,12 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 /* ─── COUNTER ANIMATION ────────────────────────── */
 function animateCounter(el, target) {
+  if (!Number.isFinite(target)) return;
+  const startValue = Number.parseInt(el.textContent, 10);
+  if (Number.isFinite(startValue) && startValue === target) {
+    el.textContent = String(target);
+    return;
+  }
   let current = 0;
   const step = Math.ceil(target / 35);
   const timer = setInterval(() => {
@@ -2136,17 +2126,33 @@ function animateCounter(el, target) {
     if (current >= target) clearInterval(timer);
   }, 40);
 }
-const counterObserver = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.querySelectorAll('.stat-number[data-target]').forEach(el => {
-        animateCounter(el, parseInt(el.dataset.target));
-      });
-      counterObserver.unobserve(e.target);
+let counterObserver = null;
+if ('IntersectionObserver' in window) {
+  counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.stat-number[data-target]').forEach(el => {
+          animateCounter(el, Number.parseInt(el.dataset.target, 10));
+        });
+        counterObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.hero-stats').forEach(el => counterObserver.observe(el));
+} else {
+  document.querySelectorAll('.stat-number[data-target]').forEach(el => {
+    const target = Number.parseInt(el.dataset.target, 10);
+    if (Number.isFinite(target)) el.textContent = String(target);
+  });
+}
+window.setTimeout(() => {
+  document.querySelectorAll('.stat-number[data-target]').forEach(el => {
+    const target = Number.parseInt(el.dataset.target, 10);
+    if (Number.isFinite(target) && Number.parseInt(el.textContent, 10) !== target) {
+      animateCounter(el, target);
     }
   });
-}, { threshold: 0.3 });
-document.querySelectorAll('.hero-stats').forEach(el => counterObserver.observe(el));
+}, 1200);
 
 /* ─── TABS ──────────────────────────────────────── */
 function switchTab(id, btn) {
