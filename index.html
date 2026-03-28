@@ -181,6 +181,18 @@
       100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
     }
     .hero-content { position: relative; z-index: 1; max-width: 860px; }
+    .hero-logo {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0f172a, #1e3a5f);
+      padding: 8px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 0 1px rgba(88,166,255,.25);
+      margin: 0 auto 1.2rem;
+      display: block;
+      animation: fadeDown .6s ease both;
+    }
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: .5rem;
       background: rgba(46,116,181,.15);
@@ -1031,6 +1043,7 @@
       /* Logo responsive */
       .logo { width: 35px; height: 35px; padding: 3px; }
       .site-title { font-size: 1rem; }
+      .hero-logo { width: 84px; height: 84px; padding: 6px; }
     }
     @media (max-width: 480px) {
       section { padding: 3.5rem 1rem; }
@@ -1163,6 +1176,7 @@
 <section id="hero">
   <div id="particles" aria-hidden="true"></div>
   <div class="hero-content">
+    <img src="assets/img/iu-digital-logo.png" alt="Logo oficial IU Digital de Antioquia" class="hero-logo" width="110" height="110" />
     <div class="hero-eyebrow">
       <span>📚</span>
       <span>IU Digital de Antioquia — Programación Orientada a Objetos</span>
