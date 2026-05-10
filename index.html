@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Gestión de Biblioteca — POO-2 · IU Digital</title>
+  <meta name="description" content="Sistema de gestión de biblioteca universitaria desarrollado en Java con Programación Orientada a Objetos (POO). Proyecto académico de Andres Parra, Juan Rueda y Luis Castaño — IU Digital de Antioquia, 2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════
+       RESET & ROOT VARIABLES
+    ═══════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:          #0D1117;
+      --bg2:         #161B22;
+      --bg3:         #1C2333;
+      --border:      #30363D;
+      --accent-blue: #2E74B5;
+      --accent-blue-light: #58A6FF;
+      --accent-green:#00D084;
+      --accent-green-light: #3DDB96;
+      --accent-purple:#BC86F5;
+      --text:        #E6EDF3;
+      --text-muted:  #8B949E;
+      --text-dim:    #848D97;
+      --radius:      12px;
+      --radius-lg:   20px;
+      --shadow:      0 4px 24px rgba(0,0,0,.45);
+      --shadow-glow-blue:  0 0 24px rgba(46,116,181,.35);
+      --shadow-glow-green: 0 0 24px rgba(0,208,132,.35);
+      --font-body:   'Inter', sans-serif;
+      --font-head:   'Poppins', sans-serif;
+      --font-mono:   'JetBrains Mono', monospace;
+      --transition:  0.3s cubic-bezier(.4,0,.2,1);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    ::selection { background: rgba(46,116,181,.4); color: var(--text); }
+    a { color: var(--accent-blue-light); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; }
+
+    /* ═══════════════════════════════════════
+       SCROLLBAR
+    ═══════════════════════════════════════ */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+
+    /* ═══════════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════════ */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(13,17,23,.7);
+      border-bottom: 1px solid transparent;
+      transition: var(--transition);
+    }
+    #navbar.scrolled {
+      background: rgba(13,17,23,.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom-color: var(--border);
+      box-shadow: var(--shadow);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: .55rem;
+      font-family: var(--font-head);
+      font-weight: 700; font-size: 1.05rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo .logo-icon { font-size: 1.4rem; }
+    /* ─── Logo institucional ─── */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-family: var(--font-head);
+      font-weight: 700;
+    }
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: linear-gradient(135deg, #0f172a, #1e3a5f);
+      padding: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.45), 0 0 0 1px rgba(88,166,255,.25);
+      flex-shrink: 0;
+      transition: box-shadow var(--transition), transform var(--transition);
+    }
+    .logo-container:hover .logo {
+      box-shadow: 0 6px 18px rgba(0,0,0,.5), 0 0 0 2px rgba(88,166,255,.55);
+      transform: scale(1.06);
+    }
+    .logo-container:hover { text-decoration: none; color: var(--text); }
+    .site-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .logo-container:focus-visible {
+      outline: 2px solid var(--accent-blue-light);
+      outline-offset: 4px;
+      border-radius: 6px;
+    }
+    .nav-links { display: flex; gap: .25rem; list-style: none; }
+    .nav-links a {
+      padding: .4rem .85rem;
+      border-radius: 8px;
+      font-size: .88rem; font-weight: 500;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+    .nav-links a:hover {
+      background: var(--bg3);
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; }
+    .nav-toggle span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text); margin: 5px 0;
+      transition: var(--transition);
+    }
+
+    /* ═══════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════ */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Animated gradient background */
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 30%,
+        rgba(46,116,181,.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 80%,
+        rgba(0,208,132,.10) 0%, transparent 50%);
+      animation: heroBg 8s ease-in-out infinite alternate;
+    }
+    @keyframes heroBg {
+      0%   { opacity:.8; transform: scale(1) translateY(0); }
+      100% { opacity:1;  transform: scale(1.06) translateY(-10px); }
+    }
+    /* Floating particles */
+    #particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: .18;
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10%  { opacity: .18; }
+      90%  { opacity: .18; }
+      100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 860px; }
+    .hero-logo {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0f172a, #1e3a5f);
+      padding: 8px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 0 1px rgba(88,166,255,.25);
+      margin: 0 auto 1.2rem;
+      display: block;
+      animation: fadeDown .6s ease both;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(46,116,181,.15);
+      border: 1px solid rgba(46,116,181,.35);
+      padding: .35rem 1rem;
+      border-radius: 999px;
+      font-size: .82rem; font-weight: 600; letter-spacing: .06em;
+      color: var(--accent-blue-light);
+      margin-bottom: 1.5rem;
+      animation: fadeDown .6s ease both;
+    }
+    @keyframes fadeDown {
+      from { opacity:0; transform:translateY(-14px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .hero-title {
+      font-family: var(--font-head);
+      font-size: clamp(2.2rem, 6vw, 4.4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      background: linear-gradient(135deg, var(--text) 30%, var(--accent-blue-light) 70%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeUp .7s .1s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(22px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .hero-subtitle {
+      margin-top: 1.1rem;
+      font-size: clamp(1rem, 2.2vw, 1.25rem);
+      color: var(--text-muted);
+      font-weight: 400;
+      animation: fadeUp .7s .2s ease both;
+    }
+    .hero-badges {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: .65rem;
+      margin-top: 1.8rem;
+      animation: fadeUp .7s .3s ease both;
+    }
+    .badge {
+      padding: .38rem .9rem;
+      border-radius: 999px;
+      font-size: .82rem; font-weight: 600;
+      border: 1px solid;
+      transition: var(--transition);
+    }
+    .badge:hover { transform: translateY(-3px); }
+    .badge-blue  { background:rgba(46,116,181,.15); border-color:rgba(46,116,181,.5); color:var(--accent-blue-light); }
+    .badge-green { background:rgba(0,208,132,.12);  border-color:rgba(0,208,132,.4);  color:var(--accent-green); }
+    .badge-purple{ background:rgba(188,134,245,.12);border-color:rgba(188,134,245,.4);color:var(--accent-purple); }
+    .hero-cta {
+      margin-top: 2.4rem;
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp .7s .45s ease both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .8rem 2rem;
+      border-radius: 10px;
+      background: var(--accent-blue);
+      color: #fff;
+      font-weight: 600; font-size: .95rem;
+      border: none; cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 0 0 0 rgba(46,116,181,.5);
+    }
+    .btn-primary:hover {
+      background: #3a8ad4;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(46,116,181,.5);
+      text-decoration: none; color: #fff;
+    }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .8rem 2rem;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      font-weight: 600; font-size: .95rem;
+      border: 1px solid var(--border); cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-outline:hover {
+      background: var(--bg3);
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+      text-decoration: none; color: var(--text);
+    }
+    /* Stats counters */
+    .hero-stats {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem;
+      margin-top: 3.5rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+      animation: fadeUp .7s .55s ease both;
+    }
+    .stat { text-align: center; }
+    .stat-number {
+      font-family: var(--font-head);
+      font-size: 2.4rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-blue-light), var(--accent-green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: .8rem; color: var(--text-muted); font-weight: 500; }
+
+    /* ═══════════════════════════════════════
+       SECTION GENERIC
+    ═══════════════════════════════════════ */
+    section { padding: 6rem 2rem; }
+    .section-alt { background: var(--bg2); }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 3.5rem; }
+    .section-tag {
+      display: inline-block;
+      padding: .28rem .85rem;
+      border-radius: 999px;
+      font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      background: rgba(46,116,181,.13);
+      border: 1px solid rgba(46,116,181,.3);
+      color: var(--accent-blue-light);
+      margin-bottom: .85rem;
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+    .section-desc {
+      margin-top: .75rem;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 620px;
+      margin-left: auto; margin-right: auto;
+    }
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══════════════════════════════════════
+       CARDS GRID
+    ═══════════════════════════════════════ */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      transition: var(--transition);
+    }
+    .card:hover {
+      border-color: var(--accent-blue);
+      box-shadow: var(--shadow-glow-blue);
+      transform: translateY(-4px);
+    }
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+    .card-title {
+      font-family: var(--font-head);
+      font-size: 1.15rem; font-weight: 700;
+      margin-bottom: .5rem;
+    }
+    .card-text { color: var(--text-muted); font-size: .9rem; }
+
+    /* ═══════════════════════════════════════
+       SECTION 2 — ABOUT
+    ═══════════════════════════════════════ */
+    #about .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .about-text p { color: var(--text-muted); margin-bottom: 1rem; line-height: 1.75; }
+    .about-text h2 {
+      font-family: var(--font-head);
+      font-size: 1.6rem; font-weight: 700;
+      margin-bottom: 1.25rem;
+    }
+    .about-text h3 {
+      font-family: var(--font-head);
+      font-size: 1.6rem; font-weight: 700;
+      margin-bottom: 1.25rem;
+    }
+    .feature-list { list-style: none; }
+    .feature-list li {
+      display: flex; align-items: flex-start; gap: .65rem;
+      padding: .5rem 0;
+      color: var(--text-muted);
+      font-size: .93rem;
+    }
+    .feature-list li::before {
+      content: '✓';
+      color: var(--accent-green);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: .05rem;
+    }
+    .about-cards { display: flex; flex-direction: column; gap: 1rem; }
+    .mini-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.4rem;
+      display: flex; align-items: center; gap: 1rem;
+      transition: var(--transition);
+    }
+    .mini-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateX(6px);
+    }
+    .mini-card-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .mini-card h4 { font-size: .95rem; font-weight: 600; margin-bottom: .2rem; }
+    .mini-card p  { font-size: .82rem; color: var(--text-muted); }
+
+    /* ═══════════════════════════════════════
+       SECTION 3 — EA1 (UML)
+    ═══════════════════════════════════════ */
+    #ea1 .uml-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .uml-class {
+      background: var(--bg);
+      border: 1px solid var(--accent-blue);
+      border-radius: var(--radius);
+      overflow: hidden;
+      font-family: var(--font-mono);
+      font-size: .82rem;
+      transition: var(--transition);
+    }
+    .uml-class:hover { box-shadow: var(--shadow-glow-blue); transform: translateY(-3px); }
+    .uml-header {
+      background: rgba(46,116,181,.2);
+      padding: .65rem 1rem;
+      border-bottom: 1px solid var(--accent-blue);
+      font-weight: 700;
+      color: var(--accent-blue-light);
+      text-align: center;
+      font-size: .88rem;
+    }
+    .uml-header .uml-stereotype {
+      font-size: .7rem;
+      font-style: italic;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: .15rem;
+    }
+    .uml-section {
+      padding: .6rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .uml-section:last-child { border-bottom: none; }
+    .uml-section-label {
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text-dim);
+      margin-bottom: .3rem;
+    }
+    .uml-item {
+      display: flex; align-items: flex-start; gap: .3rem;
+      padding: .18rem 0;
+      color: var(--text-muted);
+    }
+    .uml-item .vis { color: var(--accent-blue-light); font-weight: 600; flex-shrink:0; }
+    .uml-item .type { color: var(--accent-green); font-size: .78rem; }
+    .uml-item.method { color: var(--accent-purple); }
+    .uml-cta { text-align: center; margin-top: 1.5rem; }
+
+    /* ═══════════════════════════════════════
+       SECTION 4 — EA2 (FLIP CARDS)
+    ═══════════════════════════════════════ */
+    #ea2 .flip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .flip-card { perspective: 1200px; height: 340px; }
+    .flip-card-inner {
+      position: relative; width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform .6s cubic-bezier(.4,0,.2,1);
+    }
+    .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+    .flip-front, .flip-back {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      border: 1px solid var(--border);
+    }
+    .flip-front { background: var(--bg3); }
+    .flip-back  { background: var(--bg); transform: rotateY(180deg); border-color: var(--accent-blue); }
+    .flip-front-title {
+      font-family: var(--font-head);
+      font-size: 1.2rem; font-weight: 700;
+      margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .attr-group { margin-bottom: 1rem; }
+    .attr-label {
+      font-size: .7rem; text-transform: uppercase; letter-spacing: .07em;
+      color: var(--text-dim); margin-bottom: .35rem;
+    }
+    .attr-item {
+      display: flex; align-items: center; gap: .45rem;
+      font-size: .82rem; color: var(--text-muted);
+      padding: .2rem 0;
+    }
+    .attr-item::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      flex-shrink: 0;
+    }
+    .method-item {
+      display: flex; align-items: center; gap: .45rem;
+      font-size: .82rem; color: var(--accent-purple);
+      padding: .2rem 0;
+    }
+    .method-item::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 2px;
+      background: var(--accent-purple);
+      flex-shrink: 0;
+    }
+    .flip-back pre {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      color: var(--accent-green);
+      line-height: 1.55;
+      overflow: auto;
+      height: 100%;
+    }
+    .flip-hint {
+      font-size: .72rem; color: var(--text-dim);
+      text-align: right; margin-top: .5rem;
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION 5 — EA3 (INHERITANCE)
+    ═══════════════════════════════════════ */
+    #ea3 .tree-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      margin-bottom: 3rem;
+    }
+    .tree-block { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; }
+    .tree-block-title {
+      font-size: .8rem; text-transform: uppercase; letter-spacing: .08em;
+      color: var(--text-dim); margin-bottom: 1.25rem; font-weight: 600;
+    }
+    .tree-root {
+      display: flex; align-items: center; gap: .75rem;
+      background: rgba(46,116,181,.15);
+      border: 1px solid rgba(46,116,181,.4);
+      border-radius: 10px;
+      padding: .75rem 1.1rem;
+      margin-bottom: .85rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--accent-blue-light);
+    }
+    .tree-children { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .6rem; }
+    .tree-node {
+      position: relative;
+      display: flex; align-items: center; gap: .75rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .65rem 1.1rem;
+      font-family: var(--font-mono);
+      font-size: .88rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .tree-node::before {
+      content: '';
+      position: absolute; left: -1.1rem; top: 50%;
+      width: .8rem; height: 1px;
+      background: var(--border);
+    }
+    .tree-node:hover {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+      background: rgba(0,208,132,.08);
+      transform: translateX(4px);
+      box-shadow: var(--shadow-glow-green);
+    }
+    .tree-node .node-attr {
+      margin-left: auto;
+      font-size: .72rem;
+      background: rgba(0,208,132,.1);
+      border: 1px solid rgba(0,208,132,.2);
+      color: var(--accent-green);
+      padding: .18rem .55rem;
+      border-radius: 999px;
+    }
+    /* Polymorphism demo */
+    .poly-demo { margin-top: 3rem; }
+    .poly-demo-title {
+      font-family: var(--font-head);
+      font-size: 1.3rem; font-weight: 700;
+      margin-bottom: 1.25rem;
+      color: var(--accent-purple);
+    }
+    .poly-buttons { display: flex; flex-wrap: wrap; gap: .75rem; margin-bottom: 1.5rem; }
+    .poly-btn {
+      padding: .55rem 1.2rem;
+      border-radius: 8px;
+      border: 1px solid var(--accent-purple);
+      background: rgba(188,134,245,.08);
+      color: var(--accent-purple);
+      font-size: .88rem; font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-mono);
+    }
+    .poly-btn:hover, .poly-btn.active {
+      background: rgba(188,134,245,.22);
+      box-shadow: 0 0 16px rgba(188,134,245,.3);
+      transform: translateY(-2px);
+    }
+    .poly-output {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.75rem;
+      font-family: var(--font-mono);
+      font-size: .88rem;
+      color: var(--accent-green);
+      min-height: 130px;
+      line-height: 1.65;
+      transition: var(--transition);
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION 6 — DEMO INTERACTIVA
+    ═══════════════════════════════════════ */
+    #demo .tabs-nav {
+      display: flex; gap: .25rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    .tab-btn {
+      padding: .65rem 1.4rem;
+      border: none; background: none;
+      color: var(--text-muted);
+      font-size: .9rem; font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active {
+      color: var(--accent-blue-light);
+      border-bottom-color: var(--accent-blue-light);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    /* Catalog tab */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .book-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      transition: var(--transition);
+    }
+    .book-card:hover { border-color: var(--accent-blue); transform: translateY(-3px); }
+    .book-card-title { font-size: .92rem; font-weight: 700; margin-bottom: .3rem; }
+    .book-card-author { font-size: .8rem; color: var(--text-muted); margin-bottom: .65rem; }
+    .book-type-badge {
+      display: inline-block;
+      padding: .2rem .6rem;
+      border-radius: 999px;
+      font-size: .72rem; font-weight: 600;
+    }
+    .type-ficcion  { background:rgba(188,134,245,.15); color:var(--accent-purple); }
+    .type-romance  { background:rgba(255,107,107,.15); color:#ff6b6b; }
+    .type-historico{ background:rgba(255,179,0,.15);   color:#ffb300; }
+    .avail-badge {
+      display: inline-block; margin-left: .5rem;
+      padding: .2rem .6rem;
+      border-radius: 999px;
+      font-size: .72rem; font-weight: 600;
+    }
+    .avail-yes { background:rgba(0,208,132,.12); color:var(--accent-green); }
+    .avail-no  { background:rgba(255,80,80,.12); color:#ff5050; }
+    /* Loan tab */
+    .loan-form {
+      max-width: 480px;
+      display: flex; flex-direction: column; gap: 1.2rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: .85rem; font-weight: 600;
+      margin-bottom: .45rem;
+      color: var(--text-muted);
+    }
+    .form-group select, .form-group input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .65rem 1rem;
+      color: var(--text);
+      font-size: .9rem;
+      font-family: var(--font-body);
+      outline: 0;
+      transition: var(--transition);
+    }
+    .form-group select:focus, .form-group input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(46,116,181,.35);
+    }
+    .loan-result {
+      margin-top: 1.25rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+      font-family: var(--font-mono);
+      font-size: .82rem;
+      color: var(--accent-green);
+      display: none;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: pre;
+      animation: slideIn .4s ease;
+    }
+    @keyframes slideIn {
+      from { opacity:0; transform:translateY(10px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .loan-result.show { display: block; }
+    /* Search tab */
+    #searchInput {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .75rem 1.25rem;
+      color: var(--text);
+      font-size: .95rem;
+      font-family: var(--font-body);
+      outline: 0;
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+    }
+    #searchInput:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(46,116,181,.35); }
+    #searchResults { display: flex; flex-direction: column; gap: .65rem; }
+    .search-result-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .9rem 1.2rem;
+      display: flex; align-items: center; gap: 1rem;
+      transition: var(--transition);
+    }
+    .search-result-item:hover { border-color: var(--accent-blue); }
+    .search-result-item.hidden { display: none; }
+    .sr-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .sr-title { font-weight: 600; font-size: .9rem; margin-bottom: .15rem; }
+    .sr-meta { font-size: .78rem; color: var(--text-muted); }
+    #noResults {
+      text-align: center; color: var(--text-dim);
+      padding: 2rem; display: none;
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION 7 — TERMINAL
+    ═══════════════════════════════════════ */
+    #terminal-section {
+      background: var(--bg2);
+    }
+    .terminal-wrapper {
+      background: #0a0e14;
+      border: 1px solid #2a2f3a;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .terminal-bar {
+      background: #1c1f26;
+      padding: .7rem 1rem;
+      display: flex; align-items: center; gap: .5rem;
+      border-bottom: 1px solid #2a2f3a;
+    }
+    .t-btn {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .t-btn-red    { background:#ff5f57; }
+    .t-btn-yellow { background:#febc2e; }
+    .t-btn-green  { background:#28c840; }
+    .terminal-title {
+      margin-left: auto; margin-right: auto;
+      font-size: .78rem; color: #6e7681;
+      font-family: var(--font-mono);
+    }
+    .terminal-body {
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: .82rem;
+      line-height: 1.7;
+      color: #a8d8a8;
+      min-height: 380px;
+      position: relative;
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 480px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .t-green  { color: #00d084; }
+    .t-blue   { color: #58a6ff; }
+    .t-yellow { color: #e3b341; }
+    .t-white  { color: #e6edf3; }
+    .t-dim    { color: #4a5261; }
+    .t-red    { color: #ff5555; }
+    .cursor {
+      display: inline-block;
+      width: 8px; height: 15px;
+      background: #00d084;
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+    @keyframes blink {
+      0%, 100% { opacity:1; }
+      50%       { opacity:0; }
+    }
+    #terminal-output { white-space: pre-wrap; }
+    .terminal-controls {
+      display: flex; gap: 1rem;
+      margin-top: 1.5rem;
+      justify-content: flex-end;
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION 8 — TEAM
+    ═══════════════════════════════════════ */
+    #team .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.75rem;
+    }
+    .team-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .team-card::before {
+      content: '';
+      position: absolute; top:0; left:0; right:0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+      transform: scaleX(0);
+      transition: var(--transition);
+    }
+    .team-card:hover { box-shadow: 0 0 32px rgba(46,116,181,.25); transform: translateY(-6px); border-color: var(--accent-blue); }
+    .team-card:hover::before { transform: scaleX(1); }
+    .team-avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1.25rem;
+      border: 3px solid var(--border);
+      transition: var(--transition);
+    }
+    .team-card:hover .team-avatar { border-color: var(--accent-blue); box-shadow: var(--shadow-glow-blue); }
+    .team-name {
+      font-family: var(--font-head);
+      font-size: 1.1rem; font-weight: 700;
+      margin-bottom: .35rem;
+    }
+    .team-role { color: var(--accent-blue-light); font-size: .85rem; font-weight: 500; margin-bottom: .75rem; }
+    .team-desc { color: var(--text-muted); font-size: .85rem; }
+
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: start;
+    }
+    .footer-brand .nav-logo { margin-bottom: .65rem; }
+    .footer-brand p { color: var(--text-dim); font-size: .85rem; max-width: 320px; }
+    .footer-links h4 {
+      font-size: .8rem; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--text-dim);
+      margin-bottom: .75rem;
+    }
+    .footer-links ul { list-style: none; display: flex; flex-direction: column; gap: .45rem; }
+    .footer-links a { font-size: .88rem; color: var(--text-muted); }
+    .footer-links a:hover { color: var(--text); }
+    .footer-bottom {
+      max-width: 1100px; margin: 2rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-dim);
+      font-size: .82rem;
+    }
+
+    /* ═══════════════════════════════════════
+       BACK TO TOP BUTTON
+    ═══════════════════════════════════════ */
+    #back-top {
+      position: fixed; bottom: 1.75rem; right: 1.75rem;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      color: #fff;
+      border: none; cursor: pointer;
+      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(46,116,181,.5);
+      transition: var(--transition);
+      opacity: 0; pointer-events: none;
+      z-index: 900;
+    }
+    #back-top.show { opacity:1; pointer-events: all; }
+    #back-top:hover { background: #3a8ad4; transform: translateY(-3px); }
+
+    /* ═══════════════════════════════════════
+       MODAL
+    ═══════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.75);
+      z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    .modal-overlay.open { opacity:1; pointer-events: all; }
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      max-width: 560px; width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(.96);
+      transition: transform .3s ease;
+    }
+    .modal-overlay.open .modal { transform: scale(1); }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .modal-title {
+      font-family: var(--font-head);
+      font-size: 1.15rem; font-weight: 700;
+      color: var(--accent-green);
+    }
+    .modal-close {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; width: 32px; height: 32px;
+      cursor: pointer; color: var(--text-muted);
+      font-size: .95rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .modal-close:hover { background: var(--bg); color: var(--text); }
+    .modal pre {
+      font-family: var(--font-mono);
+      font-size: .8rem;
+      color: var(--accent-green);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      line-height: 1.6;
+    }
+    .modal-desc {
+      color: var(--text-muted); font-size: .88rem; margin-bottom: 1rem;
+    }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 768px) {
+      #navbar { padding: 0 1rem; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 1rem; gap: .25rem; }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: block; }
+      #about .about-grid { grid-template-columns: 1fr; }
+      #ea3 .tree-container { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; }
+      /* Flip cards: use min-height instead of fixed height on mobile */
+      .flip-card { height: auto; min-height: 340px; }
+      /* Tabs: allow horizontal scroll if labels don't fit */
+      #demo .tabs-nav { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; }
+      .tab-btn { white-space: nowrap; }
+      /* Logo responsive */
+      .logo { width: 35px; height: 35px; padding: 3px; }
+      .site-title { font-size: 1rem; }
+      .hero-logo { width: 84px; height: 84px; padding: 6px; }
+    }
+    @media (max-width: 480px) {
+      section { padding: 3.5rem 1rem; }
+      .hero-stats { gap: 1.5rem; }
+      /* On very small screens, show flip cards without the 3D rotation — toggle instead */
+      .flip-card { perspective: none; }
+      .flip-card-inner { transform-style: flat; }
+      .flip-card:hover .flip-card-inner { transform: none; }
+      .flip-front { position: static; }
+      .flip-back { position: static; transform: none; display: none; border-top: 1px solid var(--accent-blue); border-radius: 0 0 var(--radius-lg) var(--radius-lg); border-top-left-radius: 0; border-top-right-radius: 0; }
+      .flip-card.flipped .flip-front { display: none; }
+      .flip-card.flipped .flip-back { display: block; }
+      .flip-card-inner { height: auto; }
+    }
+
+    /* ═══════════════════════════════════════
+       SKIP LINK & SCREEN-READER UTILITIES
+    ═══════════════════════════════════════ */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--accent-blue);
+      color: #fff;
+      padding: .5rem 1.25rem;
+      border-radius: 0 0 8px 8px;
+      font-weight: 600;
+      font-size: .9rem;
+      z-index: 9999;
+      transition: top .2s ease;
+      text-decoration: none;
+    }
+    .skip-link:focus { top: 0; }
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ═══════════════════════════════════════
+       FOCUS VISIBLE — KEYBOARD NAVIGATION
+    ═══════════════════════════════════════ */
+    :focus-visible {
+      outline: 2px solid var(--accent-blue-light);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    /* Elements that provide their own visible focus via box-shadow */
+    .form-group select:focus-visible,
+    .form-group input:focus-visible,
+    #searchInput:focus-visible {
+      outline: 0;
+    }
+    /* Buttons with their own coloured background */
+    .btn-primary:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+    .nav-links a:focus-visible {
+      background: var(--bg3);
+      color: var(--text);
+      outline: 2px solid var(--accent-blue-light);
+      outline-offset: 2px;
+    }
+    .tree-node:focus-visible {
+      outline: 2px solid var(--accent-green);
+      outline-offset: 2px;
+    }
+    .poly-btn:focus-visible {
+      outline: 2px solid var(--accent-purple);
+      outline-offset: 2px;
+    }
+    .tab-btn:focus-visible {
+      outline: 2px solid var(--accent-blue-light);
+      outline-offset: -2px;
+    }
+    #back-top:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+
+    /* ═══════════════════════════════════════
+       REDUCED MOTION
+    ═══════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+<!-- ═══════════════════════════════════════
+     HEADER / NAVBAR
+═══════════════════════════════════════ -->
+<header>
+<nav id="navbar" role="navigation" aria-label="Navegación principal">
+  <a class="logo-container" href="#hero" aria-label="Inicio — Sistema Biblioteca POO">
+    <img src="assets/img/iu-digital-logo.png" alt="IU Digital de Antioquia" class="logo" width="42" height="42" />
+    <span class="site-title">Sistema Biblioteca POO</span>
+  </a>
+  <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero">Inicio</a></li>
+    <li><a href="#ea1">EA1</a></li>
+    <li><a href="#ea2">EA2</a></li>
+    <li><a href="#ea3">EA3</a></li>
+    <li><a href="#team">Equipo</a></li>
+  </ul>
+</nav>
+</header>
+
+<main id="main-content">
+
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<section id="hero">
+  <div id="particles" aria-hidden="true"></div>
+  <div class="hero-content">
+    <img src="assets/img/iu-digital-logo.png" alt="Logo oficial IU Digital de Antioquia" class="hero-logo" width="110" height="110" />
+    <div class="hero-eyebrow">
+      <span>📚</span>
+      <span>IU Digital de Antioquia — Programación Orientada a Objetos</span>
+    </div>
+    <h1 class="hero-title">Sistema de Gestión<br/>de Biblioteca</h1>
+    <p class="hero-subtitle">Programación Orientada a Objetos &mdash; IU Digital</p>
+    <div class="hero-badges">
+      <span class="badge badge-blue">Java</span>
+      <span class="badge badge-green">POO</span>
+      <span class="badge badge-purple">Herencia</span>
+      <span class="badge badge-blue">Polimorfismo</span>
+      <span class="badge badge-green">Encapsulamiento</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#about" class="btn-primary">Ver Proyecto ↓</a>
+      <a href="https://github.com/jeronimoparra-ai/POO-2" target="_blank" rel="noopener" class="btn-outline">
+        ⭐ GitHub
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-number" data-target="4">4</div>
+        <div class="stat-label">Clases base</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number" data-target="5">5</div>
+        <div class="stat-label">Subclases</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number" data-target="10">10</div>
+        <div class="stat-label">Archivos Java</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number" data-target="3">3</div>
+        <div class="stat-label">Integrantes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 2 — ABOUT
+═══════════════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <h2>Caso de Estudio</h2>
+        <p>Este proyecto implementa un sistema completo de gestión de biblioteca universitaria usando los principios fundamentales de la Programación Orientada a Objetos en Java.</p>
+        <p>El sistema permite registrar libros y usuarios, realizar y devolver préstamos, buscar por título o autor, generar recibos automáticos y consultar el historial global de préstamos.</p>
+        <ul class="feature-list">
+          <li>Registrar libros y usuarios en el sistema</li>
+          <li>Prestar libros con verificación de disponibilidad y límite de 3 por usuario</li>
+          <li>Devolver libros y actualizar inventario automáticamente</li>
+          <li>Buscar libros por título o por autor</li>
+          <li>Generar recibo de cada préstamo realizado</li>
+          <li>Consultar el registro global de todos los préstamos</li>
+        </ul>
+      </div>
+      <div class="about-cards">
+        <div class="mini-card">
+          <div class="mini-card-icon">🔒</div>
+          <div>
+            <h4>Encapsulamiento</h4>
+            <p>Todos los atributos son <code>private</code>. Solo accesibles mediante getters y setters públicos.</p>
+          </div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-icon">🌳</div>
+          <div>
+            <h4>Herencia</h4>
+            <p>Clases <code>Libro</code> y <code>Usuario</code> son superclases extendidas por tipos especializados.</p>
+          </div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-icon">🔄</div>
+          <div>
+            <h4>Polimorfismo</h4>
+            <p>Método <code>mostrarInfoLibro()</code> se sobreescribe con comportamiento distinto en cada subclase.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 3 — EA1 (UML)
+═══════════════════════════════════════ -->
+<section id="ea1" class="section-alt">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Actividad 1</div>
+      <h2 class="section-title">EA1 — Diagrama de Clases UML</h2>
+      <p class="section-desc">Modelado del sistema mediante un diagrama de clases UML elaborado en LucidChart, identificando atributos, métodos y relaciones entre las 4 clases principales.</p>
+    </div>
+    <div class="uml-container reveal">
+      <!-- Libro -->
+      <div class="uml-class">
+        <div class="uml-header">
+          <span class="uml-stereotype">&laquo;class&raquo;</span>
+          Libro
+        </div>
+        <div class="uml-section">
+          <div class="uml-section-label">Atributos</div>
+          <div class="uml-item"><span class="vis">&#8722;</span> titulo <span class="type">: String</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> autor <span class="type">: String</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> genero <span class="type">: String</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> disponibilidad <span class="type">: boolean</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> unidades <span class="type">: int</span></div>
+        </div>
+        <div class="uml-section">
+          <div class="uml-section-label">Métodos</div>
+          <div class="uml-item method"><span class="vis">+</span> prestar() <span class="type">: boolean</span></div>
+          <div class="uml-item method"><span class="vis">+</span> devolver() <span class="type">: void</span></div>
+          <div class="uml-item method"><span class="vis">+</span> actualizarEstado() <span class="type">: void</span></div>
+          <div class="uml-item method"><span class="vis">+</span> getTitulo() <span class="type">: String</span></div>
+          <div class="uml-item method"><span class="vis">+</span> getAutor() <span class="type">: String</span></div>
+        </div>
+      </div>
+      <!-- Usuario -->
+      <div class="uml-class">
+        <div class="uml-header">
+          <span class="uml-stereotype">&laquo;class&raquo;</span>
+          Usuario
+        </div>
+        <div class="uml-section">
+          <div class="uml-section-label">Atributos</div>
+          <div class="uml-item"><span class="vis">&#8722;</span> nombre <span class="type">: String</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> apellido <span class="type">: String</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> id <span class="type">: int</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> librosPrestados <span class="type">: List&lt;Libro&gt;</span></div>
+          <div class="uml-item"><span class="vis">#</span> LIMITE_PRESTAMOS <span class="type">= 3</span></div>
+        </div>
+        <div class="uml-section">
+          <div class="uml-section-label">Métodos</div>
+          <div class="uml-item method"><span class="vis">+</span> prestarLibro(libro) <span class="type">: boolean</span></div>
+          <div class="uml-item method"><span class="vis">+</span> devolverLibro(libro) <span class="type">: void</span></div>
+          <div class="uml-item method"><span class="vis">+</span> verificarLimite() <span class="type">: boolean</span></div>
+        </div>
+      </div>
+      <!-- Recibo -->
+      <div class="uml-class">
+        <div class="uml-header">
+          <span class="uml-stereotype">&laquo;class&raquo;</span>
+          Recibo
+        </div>
+        <div class="uml-section">
+          <div class="uml-section-label">Atributos</div>
+          <div class="uml-item"><span class="vis">&#8722;</span> libro <span class="type">: Libro</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> usuario <span class="type">: Usuario</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> fechaDePrestamo <span class="type">: Date</span></div>
+        </div>
+        <div class="uml-section">
+          <div class="uml-section-label">Métodos</div>
+          <div class="uml-item method"><span class="vis">+</span> generarRecibo() <span class="type">: void</span></div>
+          <div class="uml-item method"><span class="vis">+</span> getLibro() <span class="type">: Libro</span></div>
+          <div class="uml-item method"><span class="vis">+</span> getUsuario() <span class="type">: Usuario</span></div>
+        </div>
+      </div>
+      <!-- SistemaBiblioteca -->
+      <div class="uml-class">
+        <div class="uml-header">
+          <span class="uml-stereotype">&laquo;class&raquo;</span>
+          SistemaBiblioteca
+        </div>
+        <div class="uml-section">
+          <div class="uml-section-label">Atributos</div>
+          <div class="uml-item"><span class="vis">&#8722;</span> catalogo <span class="type">: List&lt;Libro&gt;</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> usuariosRegistrados <span class="type">: List&lt;Usuario&gt;</span></div>
+          <div class="uml-item"><span class="vis">&#8722;</span> registroDePrestamos <span class="type">: List&lt;Recibo&gt;</span></div>
+        </div>
+        <div class="uml-section">
+          <div class="uml-section-label">Métodos</div>
+          <div class="uml-item method"><span class="vis">+</span> agregarLibro(libro) <span class="type">: void</span></div>
+          <div class="uml-item method"><span class="vis">+</span> registrarUsuario(u) <span class="type">: void</span></div>
+          <div class="uml-item method"><span class="vis">+</span> realizarPrestamo(u,l) <span class="type">: void</span></div>
+          <div class="uml-item method"><span class="vis">+</span> buscarPorTitulo(t) <span class="type">: List&lt;Libro&gt;</span></div>
+          <div class="uml-item method"><span class="vis">+</span> buscarPorAutor(a) <span class="type">: List&lt;Libro&gt;</span></div>
+          <div class="uml-item method"><span class="vis">+</span> consultarRegistroGlobal() <span class="type">: void</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="uml-cta reveal">
+      <a href="https://lucid.app/lucidchart/0ba6e8fa-479b-4fa1-b0bb-f947cf16d115" target="_blank" rel="noopener" class="btn-primary">
+        🔗 Ver diagrama completo en LucidChart
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 4 — EA2 (FLIP CARDS)
+═══════════════════════════════════════ -->
+<section id="ea2">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Actividad 2</div>
+      <h2 class="section-title">EA2 — Implementación del Diagrama de Clases</h2>
+      <p class="section-desc">Implementación en Java de las 4 clases del sistema aplicando encapsulamiento con atributos <code>private</code> y acceso controlado mediante métodos públicos. Pasa el cursor sobre cada tarjeta para ver el código Java.</p>
+    </div>
+    <div class="flip-grid reveal">
+
+      <!-- Libro -->
+      <div class="flip-card" tabindex="0" role="button" aria-label="Clase Libro — pasa el cursor para ver el código Java">
+        <div class="flip-card-inner">
+          <div class="flip-front">
+            <h3 class="flip-front-title">📖 Libro</h3>
+            <div class="attr-group">
+              <div class="attr-label">Atributos</div>
+              <div class="attr-item">titulo : String</div>
+              <div class="attr-item">autor : String</div>
+              <div class="attr-item">genero : String</div>
+              <div class="attr-item">disponibilidad : boolean</div>
+              <div class="attr-item">unidades : int</div>
+            </div>
+            <div class="attr-group">
+              <div class="attr-label">Métodos</div>
+              <div class="method-item">prestar() : boolean</div>
+              <div class="method-item">devolver() : void</div>
+              <div class="method-item">actualizarEstado() : void</div>
+            </div>
+            <div class="flip-hint">Pasa el cursor para ver código →</div>
+          </div>
+          <div class="flip-back">
+            <pre>public class Libro {
+  private String titulo;
+  private String autor;
+  private String genero;
+  private boolean disponibilidad;
+  private int unidades;
+
+  public boolean prestar() {
+    if (this.unidades > 0) {
+      this.unidades--;
+      actualizarEstado();
+      return true;
+    }
+    return false;
+  }
+
+  public void devolver() {
+    this.unidades++;
+    actualizarEstado();
+  }
+
+  public void actualizarEstado() {
+    this.disponibilidad =
+      this.unidades > 0;
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Usuario -->
+      <div class="flip-card" tabindex="0" role="button" aria-label="Clase Usuario — pasa el cursor para ver el código Java">
+        <div class="flip-card-inner">
+          <div class="flip-front">
+            <h3 class="flip-front-title">👤 Usuario</h3>
+            <div class="attr-group">
+              <div class="attr-label">Atributos</div>
+              <div class="attr-item">nombre : String</div>
+              <div class="attr-item">apellido : String</div>
+              <div class="attr-item">id : int</div>
+              <div class="attr-item">librosPrestados : List&lt;Libro&gt;</div>
+            </div>
+            <div class="attr-group">
+              <div class="attr-label">Métodos</div>
+              <div class="method-item">prestarLibro(libro)</div>
+              <div class="method-item">devolverLibro(libro)</div>
+              <div class="method-item">verificarLimite()</div>
+            </div>
+            <div class="flip-hint">Pasa el cursor para ver código →</div>
+          </div>
+          <div class="flip-back">
+            <pre>public class Usuario {
+  private static final int
+    LIMITE_PRESTAMOS = 3;
+  private String nombre;
+  private String apellido;
+  private int id;
+  private List&lt;Libro&gt; librosPrestados;
+
+  public boolean verificarLimite() {
+    return librosPrestados.size()
+      &lt; LIMITE_PRESTAMOS;
+  }
+
+  public boolean prestarLibro(
+      Libro libro) {
+    if (verificarLimite() &&
+        libro.isDisponibilidad()) {
+      librosPrestados.add(libro);
+      libro.prestar();
+      return true;
+    }
+    return false;
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recibo -->
+      <div class="flip-card" tabindex="0" role="button" aria-label="Clase Recibo — pasa el cursor para ver el código Java">
+        <div class="flip-card-inner">
+          <div class="flip-front">
+            <h3 class="flip-front-title">🧾 Recibo</h3>
+            <div class="attr-group">
+              <div class="attr-label">Atributos</div>
+              <div class="attr-item">libro : Libro</div>
+              <div class="attr-item">usuario : Usuario</div>
+              <div class="attr-item">fechaDePrestamo : Date</div>
+            </div>
+            <div class="attr-group">
+              <div class="attr-label">Métodos</div>
+              <div class="method-item">generarRecibo() : void</div>
+              <div class="method-item">getLibro() : Libro</div>
+              <div class="method-item">getUsuario() : Usuario</div>
+            </div>
+            <div class="flip-hint">Pasa el cursor para ver código →</div>
+          </div>
+          <div class="flip-back">
+            <pre>public class Recibo {
+  private Libro libro;
+  private Usuario usuario;
+  private Date fechaDePrestamo;
+
+  public Recibo(Libro l, Usuario u) {
+    this.libro = l;
+    this.usuario = u;
+    this.fechaDePrestamo = new Date();
+  }
+
+  public void generarRecibo() {
+    SimpleDateFormat sdf =
+      new SimpleDateFormat(
+        "dd/MM/yyyy HH:mm:ss");
+    System.out.println(
+      "╔══════════════════╗");
+    System.out.println(
+      "║ RECIBO PRÉSTAMO  ║");
+    System.out.println(
+      "║ " + libro.getTitulo());
+    System.out.println(
+      "╚══════════════════╝");
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- SistemaBiblioteca -->
+      <div class="flip-card" tabindex="0" role="button" aria-label="Clase SistemaBiblioteca — pasa el cursor para ver el código Java">
+        <div class="flip-card-inner">
+          <div class="flip-front">
+            <h3 class="flip-front-title">🏛️ SistemaBiblioteca</h3>
+            <div class="attr-group">
+              <div class="attr-label">Atributos</div>
+              <div class="attr-item">catalogo : List&lt;Libro&gt;</div>
+              <div class="attr-item">usuariosRegistrados</div>
+              <div class="attr-item">registroDePrestamos</div>
+            </div>
+            <div class="attr-group">
+              <div class="attr-label">Métodos</div>
+              <div class="method-item">buscarPorTitulo(titulo)</div>
+              <div class="method-item">buscarPorAutor(autor)</div>
+              <div class="method-item">consultarRegistroGlobal()</div>
+            </div>
+            <div class="flip-hint">Pasa el cursor para ver código →</div>
+          </div>
+          <div class="flip-back">
+            <pre>public class SistemaBiblioteca {
+  private List&lt;Libro&gt; catalogo;
+  private List&lt;Usuario&gt;
+    usuariosRegistrados;
+  private List&lt;Recibo&gt;
+    registroDePrestamos;
+
+  public List&lt;Libro&gt; buscarPorTitulo(
+      String titulo) {
+    List&lt;Libro&gt; resultados =
+      new ArrayList&lt;&gt;();
+    for (Libro l : catalogo) {
+      if (l.getTitulo().toLowerCase()
+          .contains(titulo.toLowerCase()))
+        resultados.add(l);
+    }
+    return resultados;
+  }
+
+  public void realizarPrestamo(
+      Usuario u, Libro l) {
+    if (u.prestarLibro(l)) {
+      Recibo r = new Recibo(l, u);
+      registroDePrestamos.add(r);
+      r.generarRecibo();
+    }
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 5 — EA3 (HERENCIA)
+═══════════════════════════════════════ -->
+<section id="ea3" class="section-alt">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Actividad 3</div>
+      <h2 class="section-title">EA3 — Herencia y Polimorfismo</h2>
+      <p class="section-desc">Extensión del sistema con herencia: las clases <code>Libro</code> y <code>Usuario</code> se convierten en superclases. El polimorfismo permite que cada subclase tenga su propio comportamiento al invocar <code>mostrarInfoLibro()</code>.</p>
+    </div>
+
+    <div class="tree-container reveal">
+      <!-- Árbol Libro -->
+      <div class="tree-block">
+        <h3 class="tree-block-title">Jerarquía de Libro</h3>
+        <div class="tree-root">📚 Libro <em style="margin-left:auto;font-size:.75rem;color:var(--text-dim)">(superclase)</em></div>
+        <div class="tree-children">
+          <div class="tree-node" onclick="openModal('ficcion')" tabindex="0" role="button" aria-label="Ver código LibroFiccion">
+            📖 LibroFiccion
+            <span class="node-attr">universoFicticio</span>
+          </div>
+          <div class="tree-node" onclick="openModal('romance')" tabindex="0" role="button" aria-label="Ver código LibroRomance">
+            💕 LibroRomance
+            <span class="node-attr">tipoRomance</span>
+          </div>
+          <div class="tree-node" onclick="openModal('historico')" tabindex="0" role="button" aria-label="Ver código LibroHistorico">
+            🏺 LibroHistorico
+            <span class="node-attr">periodoHistorico</span>
+          </div>
+        </div>
+      </div>
+      <!-- Árbol Usuario -->
+      <div class="tree-block">
+        <h3 class="tree-block-title">Jerarquía de Usuario</h3>
+        <div class="tree-root">👥 Usuario <em style="margin-left:auto;font-size:.75rem;color:var(--text-dim)">(superclase)</em></div>
+        <div class="tree-children">
+          <div class="tree-node" onclick="openModal('estudiante')" tabindex="0" role="button" aria-label="Ver código UsuarioEstudiante">
+            🎓 UsuarioEstudiante
+            <span class="node-attr">institucion</span>
+          </div>
+          <div class="tree-node" onclick="openModal('docente')" tabindex="0" role="button" aria-label="Ver código UsuarioDocente">
+            👨‍🏫 UsuarioDocente
+            <span class="node-attr">departamento</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Polymorphism Demo -->
+    <div class="poly-demo reveal">
+      <h3 class="poly-demo-title">🔄 Demo de Polimorfismo — mostrarInfoLibro()</h3>
+      <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:1.25rem;">Selecciona un tipo de libro para ver cómo el polimorfismo ejecuta una implementación diferente del mismo método:</p>
+      <div class="poly-buttons">
+        <button class="poly-btn" onclick="polyDemo('ficcion', this)">new LibroFiccion()</button>
+        <button class="poly-btn" onclick="polyDemo('romance', this)">new LibroRomance()</button>
+        <button class="poly-btn" onclick="polyDemo('historico', this)">new LibroHistorico()</button>
+      </div>
+      <div class="poly-output" id="polyOutput">
+        <span style="color:var(--text-dim)">// Selecciona un tipo de libro arriba para ver el polimorfismo en acción...</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 6 — DEMO INTERACTIVA
+═══════════════════════════════════════ -->
+<section id="demo">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Demo</div>
+      <h2 class="section-title">Demo del Sistema</h2>
+      <p class="section-desc">Simulador interactivo del sistema de biblioteca. Explora el catálogo, realiza préstamos y busca libros en tiempo real.</p>
+    </div>
+    <div class="reveal">
+      <div class="tabs-nav" role="tablist">
+        <button class="tab-btn active" onclick="switchTab('catalog', this)" role="tab" aria-selected="true">📚 Catálogo</button>
+        <button class="tab-btn" onclick="switchTab('loan', this)" role="tab" aria-selected="false">📋 Préstamo</button>
+        <button class="tab-btn" onclick="switchTab('search', this)" role="tab" aria-selected="false">🔍 Búsqueda</button>
+      </div>
+
+      <!-- Catálogo -->
+      <div class="tab-panel active" id="tab-catalog" role="tabpanel">
+        <div class="catalog-grid" id="catalogGrid"></div>
+      </div>
+
+      <!-- Préstamo -->
+      <div class="tab-panel" id="tab-loan" role="tabpanel">
+        <div class="loan-form">
+          <div class="form-group">
+            <label for="loanUser">👤 Seleccionar Usuario</label>
+            <select id="loanUser">
+              <option value="">-- Seleccionar usuario --</option>
+              <option value="Andres Parra (ID: 1001)">Andres Parra (ID: 1001)</option>
+              <option value="Juan Rueda (ID: 1002)">Juan Rueda (ID: 1002)</option>
+              <option value="Luis Castaño (ID: 1003)">Luis Castaño (ID: 1003)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="loanBook">📖 Seleccionar Libro</label>
+            <select id="loanBook">
+              <option value="">-- Seleccionar libro --</option>
+              <option value="Harry Potter y la Piedra Filosofal">Harry Potter y la Piedra Filosofal</option>
+              <option value="El Señor de los Anillos">El Señor de los Anillos</option>
+              <option value="Cien Años de Soledad">Cien Años de Soledad</option>
+              <option value="Romeo y Julieta">Romeo y Julieta</option>
+              <option value="Sapiens">Sapiens</option>
+              <option value="1984">1984</option>
+            </select>
+          </div>
+          <button class="btn-primary" onclick="doLoan()" style="align-self:flex-start">✓ Realizar Préstamo</button>
+          <div class="loan-result" id="loanResult"></div>
+        </div>
+      </div>
+
+      <!-- Búsqueda -->
+      <div class="tab-panel" id="tab-search" role="tabpanel">
+        <label class="sr-only" for="searchInput">Buscar libros por título o autor</label>
+        <input type="text" id="searchInput" placeholder="🔍  Buscar por título o autor..." oninput="doSearch(this.value)" autocomplete="off" />
+        <div id="searchResults"></div>
+        <div id="noResults">Sin resultados para tu búsqueda.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 7 — TERMINAL
+═══════════════════════════════════════ -->
+<section id="terminal-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Output</div>
+      <h2 class="section-title">Output del Programa</h2>
+      <p class="section-desc">Salida de consola generada al ejecutar el sistema. Haz clic en "Ejecutar programa" para reiniciar la animación.</p>
+    </div>
+    <div class="reveal">
+      <div class="terminal-wrapper">
+        <div class="terminal-bar">
+          <span class="t-btn t-btn-red"></span>
+          <span class="t-btn t-btn-yellow"></span>
+          <span class="t-btn t-btn-green"></span>
+          <span class="terminal-title">Main.java — SistemaBiblioteca</span>
+        </div>
+        <div class="terminal-body">
+          <div id="terminal-output"></div>
+          <span class="cursor" id="termCursor"></span>
+        </div>
+      </div>
+      <div class="terminal-controls">
+        <button class="btn-outline" id="runBtn" onclick="runTerminal()">▶ Ejecutar programa</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 8 — TEAM
+═══════════════════════════════════════ -->
+<section id="team">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Equipo</div>
+      <h2 class="section-title">Nuestro Equipo</h2>
+      <p class="section-desc">Estudiantes de Programación Orientada a Objetos — IU Digital de Antioquia, 2026.</p>
+    </div>
+    <div class="team-grid reveal">
+      <div class="team-card">
+        <div class="team-avatar">👨‍💻</div>
+        <h3 class="team-name">Andres Jeronimo Parra Bastidas</h3>
+        <div class="team-role">Arquitectura del sistema y EA1</div>
+        <div class="team-desc">Diseño del diagrama UML, modelado de clases y coordinación de la arquitectura general del sistema de biblioteca.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">👨‍💻</div>
+        <h3 class="team-name">Juan Angel Rueda Correa</h3>
+        <div class="team-role">Implementación EA2 y Polimorfismo</div>
+        <div class="team-desc">Implementación del encapsulamiento con atributos privados, getters/setters y demostración del polimorfismo con subclases.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">👨‍💻</div>
+        <h3 class="team-name">Luis Fernando Castano Rua</h3>
+        <div class="team-role">Herencia EA3 y documentación</div>
+        <div class="team-desc">Diseño de la jerarquía de herencia, implementación de subclases especializadas y documentación del proyecto.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+</main>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a class="logo-container" href="#hero" aria-label="Inicio — Sistema Biblioteca POO">
+        <img src="assets/img/iu-digital-logo.png" alt="IU Digital de Antioquia" class="logo" width="42" height="42" />
+        <span class="site-title">Sistema Biblioteca POO</span>
+      </a>
+      <p>Sistema de gestión de biblioteca implementado en Java con POO. Proyecto académico — IU Digital de Antioquia.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Actividades</h4>
+      <ul>
+        <li><a href="#ea1">EA1 — Diagrama UML</a></li>
+        <li><a href="#ea2">EA2 — Encapsulamiento</a></li>
+        <li><a href="#ea3">EA3 — Herencia y Polimorfismo</a></li>
+        <li><a href="https://github.com/jeronimoparra-ai/POO-2" target="_blank" rel="noopener">GitHub Repository</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    Desarrollado con ❤️ para IU Digital — 2026 &nbsp;·&nbsp;
+    Docente: Julian Andres Loaiza
+  </div>
+</footer>
+
+<!-- Back to top -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+<!-- ═══════════════════════════════════════
+     MODAL
+═══════════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Cerrar modal">✕</button>
+    </div>
+    <p class="modal-desc" id="modalDesc"></p>
+    <pre id="modalCode"></pre>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+/* ─── DATA ─────────────────────────────────────── */
+const BOOKS = [
+  { title: 'Harry Potter y la Piedra Filosofal', author: 'J.K. Rowling', type: 'ficcion', universe: 'Hogwarts', available: true, units: 2 },
+  { title: 'El Señor de los Anillos',            author: 'J.R.R. Tolkien', type: 'ficcion', universe: 'Tierra Media', available: true, units: 1 },
+  { title: 'Cien Años de Soledad',               author: 'Gabriel García Márquez', type: 'ficcion', universe: 'Macondo', available: false, units: 0 },
+  { title: 'Romeo y Julieta',                    author: 'William Shakespeare', type: 'romance', romance: 'Trágico', available: true, units: 3 },
+  { title: 'Sapiens',                            author: 'Yuval Noah Harari', type: 'historico', period: 'Prehistoria – S.XX', available: true, units: 2 },
+  { title: '1984',                               author: 'George Orwell', type: 'ficcion', universe: 'Oceanía distópica', available: true, units: 1 },
+];
+
+const MODAL_DATA = {
+  ficcion: {
+    title: '📖 LibroFiccion extends Libro',
+    desc: 'Subclase de Libro. Agrega el atributo universoFicticio y sobreescribe mostrarInfoLibro() con información específica del universo ficticio.',
+    code: `public class LibroFiccion extends Libro {
+
+    private String universoFicticio;
+
+    public LibroFiccion(String titulo,
+            String autor, int unidades,
+            String universoFicticio) {
+        super(titulo, autor, unidades);
+        this.universoFicticio =
+            universoFicticio;
+    }
+
+    public String getUniversoFicticio() {
+        return universoFicticio;
+    }
+
+    @Override
+    public void mostrarInfoLibro() {
+        System.out.println(
+            "=== LIBRO DE FICCIÓN ===");
+        System.out.println(
+            "Título: " + getTitulo());
+        System.out.println(
+            "Autor: " + getAutor());
+        System.out.println(
+            "Universo: " + universoFicticio);
+    }
+}`
+  },
+  romance: {
+    title: '💕 LibroRomance extends Libro',
+    desc: 'Subclase de Libro. Agrega tipoRomance y sobreescribe mostrarInfoLibro() para mostrar información del estilo romántico.',
+    code: `public class LibroRomance extends Libro {
+
+    private String tipoRomance;
+
+    public LibroRomance(String titulo,
+            String autor, int unidades,
+            String tipoRomance) {
+        super(titulo, autor, unidades);
+        this.tipoRomance = tipoRomance;
+    }
+
+    public String getTipoRomance() {
+        return tipoRomance;
+    }
+
+    @Override
+    public void mostrarInfoLibro() {
+        System.out.println(
+            "=== LIBRO DE ROMANCE ===");
+        System.out.println(
+            "Título: " + getTitulo());
+        System.out.println(
+            "Autor: " + getAutor());
+        System.out.println(
+            "Tipo: " + tipoRomance);
+    }
+}`
+  },
+  historico: {
+    title: '🏺 LibroHistorico extends Libro',
+    desc: 'Subclase de Libro. Agrega periodoHistorico y sobreescribe mostrarInfoLibro() con información del período histórico tratado.',
+    code: `public class LibroHistorico extends Libro {
+
+    private String periodoHistorico;
+
+    public LibroHistorico(String titulo,
+            String autor, int unidades,
+            String periodoHistorico) {
+        super(titulo, autor, unidades);
+        this.periodoHistorico =
+            periodoHistorico;
+    }
+
+    public String getPeriodoHistorico() {
+        return periodoHistorico;
+    }
+
+    @Override
+    public void mostrarInfoLibro() {
+        System.out.println(
+            "=== LIBRO HISTÓRICO ===");
+        System.out.println(
+            "Título: " + getTitulo());
+        System.out.println(
+            "Autor: " + getAutor());
+        System.out.println(
+            "Período: " + periodoHistorico);
+    }
+}`
+  },
+  estudiante: {
+    title: '🎓 UsuarioEstudiante extends Usuario',
+    desc: 'Subclase de Usuario. Agrega el atributo institucion para identificar la institución educativa del estudiante.',
+    code: `public class UsuarioEstudiante
+        extends Usuario {
+
+    private String institucion;
+
+    public UsuarioEstudiante(String nombre,
+            String apellido, int id,
+            String institucion) {
+        super(nombre, apellido, id);
+        this.institucion = institucion;
+    }
+
+    public String getInstitucion() {
+        return institucion;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+            ", institucion='" +
+            institucion + "'";
+    }
+}`
+  },
+  docente: {
+    title: '👨‍🏫 UsuarioDocente extends Usuario',
+    desc: 'Subclase de Usuario. Agrega el atributo departamento para identificar el área académica del docente.',
+    code: `public class UsuarioDocente
+        extends Usuario {
+
+    private String departamento;
+
+    public UsuarioDocente(String nombre,
+            String apellido, int id,
+            String departamento) {
+        super(nombre, apellido, id);
+        this.departamento = departamento;
+    }
+
+    public String getDepartamento() {
+        return departamento;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+            ", departamento='" +
+            departamento + "'";
+    }
+}`
+  }
+};
+
+const POLY_OUTPUT = {
+  ficcion: `// Polimorfismo en acción — LibroFiccion
+Libro libro = new LibroFiccion(
+    "Harry Potter y la Piedra Filosofal",
+    "J.K. Rowling", 2, "Hogwarts");
+
+libro.mostrarInfoLibro(); // ← llama al método sobreescrito
+
+// ✓ Output:
+=== LIBRO DE FICCIÓN ===
+Título  : Harry Potter y la Piedra Filosofal
+Autor   : J.K. Rowling
+Universo: Hogwarts`,
+
+  romance: `// Polimorfismo en acción — LibroRomance
+Libro libro = new LibroRomance(
+    "Romeo y Julieta",
+    "William Shakespeare", 3, "Trágico");
+
+libro.mostrarInfoLibro(); // ← llama al método sobreescrito
+
+// ✓ Output:
+=== LIBRO DE ROMANCE ===
+Título : Romeo y Julieta
+Autor  : William Shakespeare
+Tipo   : Trágico`,
+
+  historico: `// Polimorfismo en acción — LibroHistorico
+Libro libro = new LibroHistorico(
+    "Sapiens",
+    "Yuval Noah Harari", 2,
+    "Prehistoria – Siglo XX");
+
+libro.mostrarInfoLibro(); // ← llama al método sobreescrito
+
+// ✓ Output:
+=== LIBRO HISTÓRICO ===
+Título : Sapiens
+Autor  : Yuval Noah Harari
+Período: Prehistoria – Siglo XX`
+};
+
+const TERMINAL_LINES = [
+  { text: '╔════════════════════════════════════════╗', cls: 't-blue' },
+  { text: '║  SISTEMA DE GESTIÓN DE BIBLIOTECA     ║', cls: 't-blue' },
+  { text: '║       IU Digital de Antioquia         ║', cls: 't-blue' },
+  { text: '╚════════════════════════════════════════╝', cls: 't-blue' },
+  { text: '✓ Objetos creados exitosamente', cls: 't-green' },
+  { text: 'Agregando libros al catálogo...', cls: 't-dim' },
+  { text: '✓ Harry Potter y la Piedra Filosofal', cls: 't-green' },
+  { text: '✓ El Señor de los Anillos', cls: 't-green' },
+  { text: '✓ Orgullo y Prejuicio', cls: 't-green' },
+  { text: '✓ Cumbres Borrascosas', cls: 't-green' },
+  { text: '✓ 1984', cls: 't-green' },
+  { text: '✓ Cien Años de Soledad', cls: 't-green' },
+  { text: 'Registrando usuarios...', cls: 't-dim' },
+  { text: '✓ Juan Angel Rueda Correa', cls: 't-green' },
+  { text: '✓ Luis Fernando Castano Rua', cls: 't-green' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: 'REALIZANDO PRÉSTAMOS', cls: 't-white' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: '✅ Préstamo: Harry Potter → Juan Angel', cls: 't-yellow' },
+  { text: '✅ Préstamo: Orgullo y Prejuicio → Juan Angel', cls: 't-yellow' },
+  { text: '✅ Préstamo: 1984 → Luis Fernando', cls: 't-yellow' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: 'DEMOSTRANDO POLIMORFISMO', cls: 't-white' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: '📚 LibroFiccion: Harry Potter - Universo de Hogwarts', cls: 't-green' },
+  { text: '💕 LibroRomance: Orgullo y Prejuicio - Romance Histórico', cls: 't-green' },
+  { text: '🏺 LibroHistorico: 1984 - Siglo XX Totalitarismo', cls: 't-green' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: 'REGISTRO GLOBAL DE PRÉSTAMOS', cls: 't-white' },
+  { text: '════════════════════════════════════════', cls: 't-white' },
+  { text: '1. Juan Angel → Harry Potter [PRÉSTAMO]', cls: 't-white' },
+  { text: '2. Juan Angel → Orgullo y Prejuicio [PRÉSTAMO]', cls: 't-white' },
+  { text: '3. Luis Fernando → 1984 [PRÉSTAMO]', cls: 't-white' },
+  { text: '4. Juan Angel → Harry Potter [DEVOLUCIÓN]', cls: 't-white' },
+  { text: '╔════════════════════════════════════════╗', cls: 't-blue' },
+  { text: '║   ✅ EJECUCIÓN FINALIZADA             ║', cls: 't-blue' },
+  { text: '║   Process finished with exit code 0   ║', cls: 't-blue' },
+  { text: '╚════════════════════════════════════════╝', cls: 't-blue' },
+];
+
+/* ─── PARTICLES ────────────────────────────────── */
+(function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 5 + 2;
+    const left = Math.random() * 100;
+    const delay = Math.random() * 18;
+    const duration = Math.random() * 12 + 10;
+    const blue = Math.random() > 0.5;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${left}%;
+      background:${blue ? '#2E74B5' : '#00D084'};
+      animation-delay:${delay}s;
+      animation-duration:${duration}s;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+/* ─── NAVBAR ────────────────────────────────────── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 30);
+  document.getElementById('back-top').classList.toggle('show', window.scrollY > 400);
+});
+
+/* Mobile menu */
+document.getElementById('navToggle').addEventListener('click', function () {
+  const links = document.getElementById('navLinks');
+  const open = links.classList.toggle('open');
+  this.setAttribute('aria-expanded', String(open));
+});
+// Close mobile menu on link click
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.remove('open');
+    document.getElementById('navToggle').setAttribute('aria-expanded', 'false');
+  });
+});
+
+/* ─── REVEAL ON SCROLL ─────────────────────────── */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ─── COUNTER ANIMATION ────────────────────────── */
+function animateCounter(el, target) {
+  if (!Number.isFinite(target)) return;
+  const startValue = Number.parseInt(el.textContent, 10);
+  if (Number.isFinite(startValue) && startValue === target) {
+    el.textContent = String(target);
+    return;
+  }
+  let current = 0;
+  const step = Math.ceil(target / 35);
+  const timer = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = current;
+    if (current >= target) clearInterval(timer);
+  }, 40);
+}
+let counterObserver = null;
+if ('IntersectionObserver' in window) {
+  counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.stat-number[data-target]').forEach(el => {
+          animateCounter(el, Number.parseInt(el.dataset.target, 10));
+        });
+        counterObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.hero-stats').forEach(el => counterObserver.observe(el));
+} else {
+  document.querySelectorAll('.stat-number[data-target]').forEach(el => {
+    const target = Number.parseInt(el.dataset.target, 10);
+    if (Number.isFinite(target)) el.textContent = String(target);
+  });
+}
+window.setTimeout(() => {
+  document.querySelectorAll('.stat-number[data-target]').forEach(el => {
+    const target = Number.parseInt(el.dataset.target, 10);
+    if (Number.isFinite(target) && Number.parseInt(el.textContent, 10) !== target) {
+      animateCounter(el, target);
+    }
+  });
+}, 1200);
+
+/* ─── TABS ──────────────────────────────────────── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected', 'true');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+/* ─── CATALOG ───────────────────────────────────── */
+function typeLabel(type) {
+  return { ficcion: 'Ficción', romance: 'Romance', historico: 'Histórico' }[type] || type;
+}
+function typeCls(type) {
+  return { ficcion: 'type-ficcion', romance: 'type-romance', historico: 'type-historico' }[type] || '';
+}
+(function buildCatalog() {
+  const grid = document.getElementById('catalogGrid');
+  BOOKS.forEach(b => {
+    const div = document.createElement('div');
+    div.className = 'book-card';
+    div.innerHTML = `
+      <div class="book-card-title">${b.title}</div>
+      <div class="book-card-author">${b.author}</div>
+      <span class="book-type-badge ${typeCls(b.type)}">${typeLabel(b.type)}</span>
+      <span class="avail-badge ${b.available ? 'avail-yes' : 'avail-no'}">${b.available ? '✓ Disponible' : '✗ No disponible'}</span>
+    `;
+    grid.appendChild(div);
+  });
+})();
+
+/* ─── SEARCH ────────────────────────────────────── */
+(function buildSearch() {
+  const container = document.getElementById('searchResults');
+  BOOKS.forEach((b, i) => {
+    const div = document.createElement('div');
+    div.className = 'search-result-item';
+    div.dataset.search = (b.title + ' ' + b.author).toLowerCase();
+    div.innerHTML = `
+      <div class="sr-icon">📖</div>
+      <div>
+        <div class="sr-title">${b.title}</div>
+        <div class="sr-meta">${b.author} · ${typeLabel(b.type)} · ${b.available ? '✓ Disponible' : '✗ No disponible'}</div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+})();
+
+function doSearch(q) {
+  const term = q.toLowerCase().trim();
+  const items = document.querySelectorAll('.search-result-item');
+  let shown = 0;
+  items.forEach(item => {
+    const match = !term || item.dataset.search.includes(term);
+    item.classList.toggle('hidden', !match);
+    if (match) shown++;
+  });
+  document.getElementById('noResults').style.display = (term && shown === 0) ? 'block' : 'none';
+}
+
+/* ─── LOAN SIMULATION ──────────────────────────── */
+function doLoan() {
+  const user = document.getElementById('loanUser').value;
+  const book = document.getElementById('loanBook').value;
+  const result = document.getElementById('loanResult');
+  if (!user || !book) {
+    result.innerHTML = '<span style="color:#ff5555">⚠ Por favor selecciona usuario y libro.</span>';
+    result.classList.add('show');
+    return;
+  }
+  const now = new Date();
+  const fmt = d => String(d).padStart(2, '0');
+  const fecha = `${fmt(now.getDate())}/${fmt(now.getMonth()+1)}/${now.getFullYear()} ${fmt(now.getHours())}:${fmt(now.getMinutes())}:${fmt(now.getSeconds())}`;
+  result.innerHTML =
+    `╔══════════════════════════════════════════╗\n` +
+    `║         RECIBO DE PRÉSTAMO               ║\n` +
+    `╠══════════════════════════════════════════╣\n` +
+    `║ Libro   : ${book.padEnd(31)}║\n` +
+    `║ Usuario : ${user.padEnd(31)}║\n` +
+    `║ Fecha   : ${fecha.padEnd(31)}║\n` +
+    `╚══════════════════════════════════════════╝\n\n` +
+    `✓ Préstamo registrado exitosamente.`;
+  result.classList.add('show');
+}
+
+/* ─── MODAL ─────────────────────────────────────── */
+function openModal(key) {
+  const data = MODAL_DATA[key];
+  if (!data) return;
+  document.getElementById('modalTitle').textContent = data.title;
+  document.getElementById('modalDesc').textContent = data.desc;
+  document.getElementById('modalCode').textContent = data.code;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+// Keyboard support for tree nodes
+document.querySelectorAll('.tree-node').forEach(node => {
+  node.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      node.click();
+    }
+  });
+});
+// Keyboard + touch support for flip cards
+document.querySelectorAll('.flip-card').forEach(card => {
+  // Keyboard: Enter/Space toggles flip
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      card.classList.toggle('flipped');
+      const inner = card.querySelector('.flip-card-inner');
+      if (window.innerWidth > 480) {
+        inner.style.transform =
+          inner.style.transform === 'rotateY(180deg)'
+            ? '' : 'rotateY(180deg)';
+      }
+    }
+  });
+  // Touch/click on small screens: toggle flipped class
+  card.addEventListener('click', () => {
+    if (window.innerWidth <= 480) {
+      card.classList.toggle('flipped');
+    }
+  });
+});
+
+/* ─── POLYMORPHISM DEMO ─────────────────────────── */
+function polyDemo(type, btn) {
+  document.querySelectorAll('.poly-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const out = document.getElementById('polyOutput');
+  out.style.opacity = '0';
+  setTimeout(() => {
+    out.textContent = POLY_OUTPUT[type] || '';
+    out.style.opacity = '1';
+  }, 180);
+}
+
+/* ─── TERMINAL TYPEWRITER ───────────────────────── */
+let termTimer = null;
+let termRunning = false;
+
+function runTerminal() {
+  if (termRunning) return;
+  termRunning = true;
+  const out = document.getElementById('terminal-output');
+  const cursor = document.getElementById('termCursor');
+  const btn = document.getElementById('runBtn');
+  out.innerHTML = '';
+  cursor.style.display = 'inline-block';
+  btn.disabled = true;
+  btn.textContent = '⏳ Ejecutando...';
+
+  let lineIdx = 0;
+  function printLine() {
+    if (lineIdx >= TERMINAL_LINES.length) {
+      cursor.style.display = 'none';
+      btn.disabled = false;
+      btn.textContent = '▶ Ejecutar programa';
+      termRunning = false;
+      return;
+    }
+    const line = TERMINAL_LINES[lineIdx++];
+    const span = document.createElement('span');
+    if (line.cls) span.className = line.cls;
+    span.textContent = (line.text || '') + '\n';
+    out.appendChild(span);
+    // Scroll terminal to bottom
+    const body = out.closest('.terminal-body');
+    body.scrollTop = body.scrollHeight;
+    const delay = line.text ? Math.min(line.text.length * 12, 160) : 60;
+    termTimer = setTimeout(printLine, delay);
+  }
+  printLine();
+}
+
+// Auto-run terminal when it enters viewport
+const termObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !termRunning) {
+      setTimeout(runTerminal, 500);
+      termObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+termObserver.observe(document.getElementById('terminal-section'));
+</script>
+</body>
+</html>
